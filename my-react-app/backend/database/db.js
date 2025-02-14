@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 // Create SQLite database (or connect if it already exists)
-const db = new sqlite3.Database(path.join(__dirname, 'hackathon.db'), (err) => {
+const db = new sqlite3.Database(path.join(__dirname, 'test.db'), (err) => {
   if (err) {
     console.error("Error opening database:", err);
   } else {
@@ -27,6 +27,16 @@ const createTables = () => {
       );
     `);
 
+    // User Table
+    db.run(`
+    CREATE TABLE IF NOT EXISTS User (
+      employee_id INTEGER NOT NULL,
+      username TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
+    );
+  `);
+
     // Batch Table
     db.run(`
       CREATE TABLE IF NOT EXISTS Batch (
@@ -47,7 +57,7 @@ const createTables = () => {
         FOREIGN KEY (trainee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
       );
     `);
-    
+
     // Trainer Assignments Table (Assign Trainers to Batches)
     db.run(`
       CREATE TABLE IF NOT EXISTS Trainer_Assignments (
@@ -125,7 +135,7 @@ const createTables = () => {
         FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
       );
     `);
-      
+
     //Table to assign training to a batch
     db.run(`
         CREATE TABLE IF NOT EXISTS Batch_Training (

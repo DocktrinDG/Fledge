@@ -2,9 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const db = require('./database/db');  // Import the database connection
-
+const bcrypt = require('bcrypt');
 const multer = require("multer");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const port = 3001;
@@ -13,28 +14,97 @@ const port = 3001;
 app.use(cors());  // Enable CORS for all origins
 app.use(bodyParser.json());  // To parse JSON request bodies
 
+
+// Email Configuration**
+const transporter = nodemailer.createTransport({
+    service: "gmail", // ✅ Use 'gmail' or 'outlook' (or replace with your SMTP)
+    auth: {
+        user: "nahath09@gmail.com", // ✅ Replace with your actual email
+        pass: "eaxt lttn pbvf orhu", // ❗⚠️ Use an **App Password** instead of your email password
+    },
+});
+
+// Function to Send Email**
+const sendEmail = async (to, username, password) => {
+    const mailOptions = {
+        from: "nankervis1125@gmail.com",
+        to: to,
+        subject: "Your Account Credentials",
+        text: `Dear ${username},\n\nYour account has been created successfully!\n\nUsername: ${username}\nPassword: ${password}\n\nPlease change your password after logging in.\n\nBest regards,\nAdmin Team`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`📩 Email sent to ${to}`);
+    } catch (error) {
+        console.error(" Error sending email:", error);
+    }
+};
+
 // API Routes
 
 // Create a new employee (trainer/trainee)
-app.post('/employees', (req, res) => {
-    const { first_name, last_name, email, phone, role, manager_id } = req.body;
-
-    const query = 'INSERT INTO Employee (first_name, last_name, email, phone, role, manager_id) VALUES (?, ?, ?, ?, ?, ?)';
-    db.run(query, [first_name, last_name, email, phone, role, manager_id], function (err) {
-        if (err) {
-            console.error('Error creating employee:', err.message);
-            return res.status(500).json({ error: 'Failed to create employee.' });
+app.post("/employees", async (req, res) => {
+    const { first_name, last_name, email, phone, role } = req.body;
+    
+    // Generate a random 8-character password
+    const generatePassword = () => {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
+        let password = "";
+        for (let i = 0; i < 8; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        res.status(201).json({
-            id: this.lastID,
-            first_name,
-            last_name,
-            email,
-            phone,
-            role,
-            manager_id
-        });
-    });
+        return password;
+    };
+
+    const password = generatePassword();
+    const hashedPassword = await bcrypt.hash(password, 10); // 🔒 Hash password
+
+    try {
+        //  Step 1: Insert Employee into the Database
+        db.run(
+            "INSERT INTO Employee (first_name, last_name, email, phone, role) VALUES (?, ?, ?, ?, ?)",
+            [first_name, last_name, email, phone, role],
+            function (err) {
+                if (err) {
+                    console.error("Error creating employee:", err.message);
+                    return res.status(500).json({ error: "Failed to create employee." });
+                }
+
+                const employeeId = this.lastID; // Get the inserted employee_id
+
+                // Step 2: Insert User into the Database
+                db.run(
+                    "INSERT INTO User (username, password, employee_id) VALUES (?, ?, ?)",
+                    [email, hashedPassword, employeeId],
+                    async function (err) {
+                        if (err) {
+                            console.error(" Error creating user:", err.message);
+                            return res.status(500).json({ error: "Failed to create user." });
+                        }
+
+                        // 📩 Step 3: Send Email with Credentials
+                        console.log("REACHED EMAIL FUNC");
+                        
+                        await sendEmail(email, email, password);
+
+                        res.status(201).json({
+                            id: employeeId,
+                            first_name,
+                            last_name,
+                            email,
+                            phone,
+                            role,
+                            message: "Employee created, user registered, and email sent!",
+                        });
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        console.error(" Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
 app.get('/employees', (req, res) => {
@@ -399,3 +469,65 @@ app.use((req, res, next) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+
+// app.post('/employees', (req, res) => {
+//     const { first_name, last_name, email, phone, role, manager_id } = req.body;
+
+//     const query = 'INSERT INTO Employee (first_name, last_name, email, phone, role, manager_id) VALUES (?, ?, ?, ?, ?, ?)';
+
+//     db.run(query, [first_name, last_name, email, phone, role, manager_id], function (err) {
+//         if (err) {
+//             console.error('Error creating employee:', err.message);
+//             return res.status(500).json({ error: 'Failed to create employee.' });
+//         }
+//         console.log("Employee inserted");
+//         res.status(201).json({
+//             id: this.lastID,
+//             first_name,
+//             last_name,
+//             email,
+//             phone,
+//             role,
+//             manager_id
+//         });
+//     });
+// });
+
+
+// // Create User API (with Password Hashing)
+// app.post('/users', async (req, res) => {
+//     const { username, password, employee_id } = req.body;
+
+//     if (!username || !password || !employee_id) {
+//         return res.status(400).json({ error: "All fields are required" });
+//     }
+
+//     try {
+//         // Check if username already exists
+//         db.get("SELECT * FROM User WHERE username = ?", [username], async (err, row) => {
+//             if (row) {
+//                 return res.status(400).json({ error: "Username already taken" });
+//             }
+
+//             // Hash the password
+//             const hashedPassword = await bcrypt.hash(password, 10);
+
+//             // Insert the new user into the Users table
+//             const query = `INSERT INTO User (username, password, employee_id) VALUES (?, ?, ?)`;
+
+//             db.run(query, [username, hashedPassword, employee_id], function (err) {
+//                 if (err) {
+//                     console.error('Error creating user:', err.message);
+//                     return res.status(500).json({ error: 'Failed to create user' });
+//                 }
+//                 console.log("reach insert");
+//                 res.status(201).json({ user_id: this.lastID, username, employee_id });
+//             });
+//         });
+
+//     } catch (error) {
+//         console.error('Error hashing password:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
