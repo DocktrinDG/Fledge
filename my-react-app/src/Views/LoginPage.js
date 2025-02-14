@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './css/LoginPage.css';
 
 const LoginPage = () => {
@@ -22,14 +23,26 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // Simulate an API call
-      const response = await fakeApiCall(username, password);
-      if (response.success) {
-        navigate('/dashboard');
+      // ✅ Call API to verify credentials
+      const response = await axios.post('http://localhost:3001/login', {
+        username,
+        password,
+      });
+
+      if (response.data.success) {
+        const { role } = response.data;
+
+        // ✅ Navigate based on role
+        if (role === 'Manager') {
+          navigate('/manager-dashboard');
+        } else {
+          navigate('/homepage');
+        }
       } else {
-        setError(response.message || 'Login failed');
+        setError('Invalid username or password.');
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -94,18 +107,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-const fakeApiCall = async (username, password) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (username === 'admin' && password === 'password') {
-        resolve({ success: true });
-      } else {
-        resolve({ success: false, message: 'Invalid credentials' });
-      }
-    }, 1000);
-  });
 };
 
 export default LoginPage;

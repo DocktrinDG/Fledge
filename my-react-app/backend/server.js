@@ -46,7 +46,7 @@ const sendEmail = async (to, username, password) => {
 // Create a new employee (trainer/trainee)
 app.post("/employees", async (req, res) => {
     const { first_name, last_name, email, phone, role } = req.body;
-    
+
     // Generate a random 8-character password
     const generatePassword = () => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
@@ -85,7 +85,7 @@ app.post("/employees", async (req, res) => {
 
                         // 📩 Step 3: Send Email with Credentials
                         console.log("REACHED EMAIL FUNC");
-                        
+
                         await sendEmail(email, email, password);
 
                         res.status(201).json({
@@ -459,6 +459,40 @@ app.get("/certifications", (req, res) => {
 
 // Certification Files Publicly
 app.use("/uploads/certifications", express.static(path.join(__dirname, "uploads/certifications")));
+
+//Authentication
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Step 1: Find user by username
+    const query = `
+        SELECT U.password, E.role 
+        FROM User U 
+        JOIN Employee E ON U.employee_id = E.employee_id
+        WHERE U.username = ?
+    `;
+
+    db.get(query, [username], async (err, user) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            return res.status(500).json({ success: false, error: 'Database error' });
+        }
+
+        if (!user) {
+            return res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+
+        // Step 2: Compare hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+
+        // Step 3: Send role to frontend
+        console.log("correct");
+        res.status(200).json({ success: true, role: user.role });
+    });
+});
 
 // Handle 404 (Not Found) errors for any other routes
 app.use((req, res, next) => {
