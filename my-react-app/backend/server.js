@@ -6,21 +6,23 @@ const bcrypt = require('bcrypt');
 const multer = require("multer");
 const path = require("path");
 const nodemailer = require("nodemailer");
-
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const app = express();
 const port = 3001;
-
 // Middleware
 app.use(cors());  // Enable CORS for all origins
 app.use(bodyParser.json());  // To parse JSON request bodies
+const SECRET_KEY = process.env.JWT_SECRET || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+
 
 
 // Email Configuration**
 const transporter = nodemailer.createTransport({
     service: "gmail", // ✅ Use 'gmail' or 'outlook' (or replace with your SMTP)
     auth: {
-        user: "nahath09@gmail.com", // ✅ Replace with your actual email
-        pass: "eaxt lttn pbvf orhu", // ❗⚠️ Use an **App Password** instead of your email password
+        user: "nahath09@gmail.com",
+        pass: "eaxt lttn pbvf orhu",
     },
 });
 
@@ -39,6 +41,27 @@ const sendEmail = async (to, username, password) => {
     } catch (error) {
         console.error(" Error sending email:", error);
     }
+};
+
+//Verify JWT Token
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(403).json({ error: "Access denied. No token provided." });
+    }
+
+    const token = authHeader.split(" ")[1]; // Extract token from "Bearer <token>"
+    console.log("Received Token:", token); // Debugging: Check token at backend
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            console.error("JWT Verification Error:", err.message); // Debugging
+            return res.status(401).json({ error: "Invalid or expired token." });
+        }
+
+        req.user = decoded; // Store decoded user info
+        next();
+    });
 };
 
 // API Routes
@@ -107,17 +130,66 @@ app.post("/employees", async (req, res) => {
     }
 });
 
-app.get('/employees', (req, res) => {
+app.get("/employee", verifyToken, (req, res) => {
+    const employeeId = req.user.employee_id; // Extract employee_id from JWT
+
+    const query = `
+        SELECT employee_id, first_name, last_name, email, phone, role 
+        FROM Employee 
+        WHERE employee_id = ?
+    `;
+
+    db.get(query, [employeeId], (err, row) => {
+        if (err) {
+            console.error("Error fetching employee details:", err.message);
+            return res.status(500).json({ error: "Failed to retrieve employee details." });
+        }
+
+        if (!row) {
+            return res.status(404).json({ error: "Employee not found." });
+        }
+
+        res.status(200).json(row);
+    });
+});
+
+app.get('/all-employee', (req, res) => {
     const query = 'SELECT * FROM Employee';
 
     db.all(query, [], (err, rows) => {
         if (err) {
-            console.error('Error fetching employees:', err.message);
-            return res.status(500).json({ error: 'Failed to retrieve employees.' });
+            console.error('Error fetching Employee:', err.message);
+            return res.status(500).json({ error: 'Failed to retrieve Employee.' });
         }
 
         // Send the array of employees
         res.status(200).json(rows);
+    });
+});
+
+//delete employee
+app.delete("/employee/:id", verifyToken, (req, res) => {
+    const employeeId = req.params.id;
+
+    const deleteUserQuery = "DELETE FROM User WHERE employee_id = ?";
+    const deleteEmployeeQuery = "DELETE FROM Employee WHERE employee_id = ?";
+
+    db.run(deleteUserQuery, [employeeId], function (err) {
+        if (err) {
+            console.error("Error deleting user:", err.message);
+            return res.status(500).json({ message: "Error deleting user" });
+        }
+
+        db.run(deleteEmployeeQuery, [employeeId], function (err) {
+            if (err) {
+                console.error("Error deleting employee:", err.message);
+                return res.status(500).json({ message: "Error deleting employee" });
+            }
+            if (this.changes === 0) {
+                return res.status(404).json({ message: "Employee not found" });
+            }
+            res.status(200).json({ message: "Employee and user deleted successfully" });
+        });
     });
 });
 
@@ -215,7 +287,7 @@ app.get('/batches', (req, res) => {
 
 //to show trainers  
 app.get('/employees/trainers', (req, res) => {
-    const query = 'SELECT * FROM Employee WHERE role = "Trainer"';
+    const query = 'SELECT * FROM Employee WHERE is_trainer = 1';
 
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -227,7 +299,7 @@ app.get('/employees/trainers', (req, res) => {
 
 //to show trainees  
 app.get('/employees/trainees', (req, res) => {
-    const query = 'SELECT * FROM Employee WHERE role = "Trainee"';
+    const query = 'SELECT * FROM Employee WHERE is_trainee = 1';
 
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -464,9 +536,8 @@ app.use("/uploads/certifications", express.static(path.join(__dirname, "uploads/
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    // Step 1: Find user by username
     const query = `
-        SELECT U.password, E.role 
+        SELECT U.password, E.role, U.employee_id 
         FROM User U 
         JOIN Employee E ON U.employee_id = E.employee_id
         WHERE U.username = ?
@@ -474,7 +545,7 @@ app.post('/login', (req, res) => {
 
     db.get(query, [username], async (err, user) => {
         if (err) {
-            console.error('Database error:', err.message);
+            console.error('error:', err.message);
             return res.status(500).json({ success: false, error: 'Database error' });
         }
 
@@ -482,15 +553,103 @@ app.post('/login', (req, res) => {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
 
-        // Step 2: Compare hashed password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
 
-        // Step 3: Send role to frontend
-        console.log("correct");
-        res.status(200).json({ success: true, role: user.role });
+        const token = jwt.sign({ employee_id: user.employee_id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+
+        console.log("Generated Token:", token); // Debugging: Check if token is created
+
+        res.status(200).json({ success: true, token, role: user.role });
+    });
+});
+
+//show all batch
+app.get('/batches', (req, res) => {
+    const query = 'SELECT * FROM Batch';
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to fetch batches.' });
+        }
+        res.json(rows);
+    });
+});
+
+//delete batch
+app.delete("/batch/:id", (req, res) => {
+    const batchId = req.params.id;
+    const query = "DELETE FROM Batch WHERE batch_id = ?";
+
+    db.run(query, [batchId], function (err) {
+        if (err) {
+            console.error("Error deleting batch:", err.message);
+            return res.status(500).json({ message: "Error deleting batch" });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ message: "Batch not found" });
+        }
+        res.status(200).json({ message: "Batch deleted successfully" });
+    });
+});
+
+//promote emp to trainer
+app.put("/employee/:id/make-trainer", (req, res) => {
+    const { id } = req.params;
+
+    const query = "UPDATE Employee SET is_trainer = 1 WHERE employee_id = ?";
+    db.run(query, [id], function (err) {
+        if (err) {
+            console.error("Error promoting employee:", err.message);
+            return res.status(500).json({ error: "Failed to promote employee." });
+        }
+        res.status(200).json({ message: "Employee is now a Trainer!" });
+    });
+});
+
+//promote emp to trainee
+app.put("/employee/:id/make-trainee", (req, res) => {
+    const { id } = req.params;
+
+    console.log("reached make trainee");
+    
+    const query = "UPDATE Employee SET is_trainee = 1 WHERE employee_id = ?";
+    db.run(query, [id], function (err) {
+        if (err) {
+            console.error("Error promoting employee:", err.message);
+            return res.status(500).json({ error: "Failed to promote employee." });
+        }
+        res.status(200).json({ message: "Employee is now a Trainee!" });
+    });
+});
+
+//remove trainer
+app.put("/employee/:id/remove-trainer", (req, res) => {
+    const { id } = req.params;
+
+    const query = "UPDATE Employee SET is_trainer = 0 WHERE employee_id = ?";
+    db.run(query, [id], function (err) {
+        if (err) {
+            console.error("Error removing trainer status:", err.message);
+            return res.status(500).json({ error: "Failed to remove trainer status." });
+        }
+        res.status(200).json({ message: "Trainer removed successfully!" });
+    });
+});
+
+//remove trainee
+app.put("/employee/:id/remove-trainee", (req, res) => {
+    const { id } = req.params;
+
+    const query = "UPDATE Employee SET is_trainee = 0 WHERE employee_id = ?";
+    db.run(query, [id], function (err) {
+        if (err) {
+            console.error("Error removing trainee status:", err.message);
+            return res.status(500).json({ error: "Failed to remove trainee status." });
+        }
+        res.status(200).json({ message: "Trainee removed successfully!" });
     });
 });
 

@@ -23,6 +23,8 @@ const createTables = () => {
         phone TEXT UNIQUE,
         role TEXT CHECK(role IN ('Admin', 'Manager', 'Trainer', 'Trainee')) NOT NULL,
         manager_id INTEGER,
+        is_trainer INTEGER DEFAULT 0,
+        is_trainee INTEGER DEFAULT 0,
         FOREIGN KEY (manager_id) REFERENCES Employee(employee_id) ON DELETE SET NULL
       );
     `);

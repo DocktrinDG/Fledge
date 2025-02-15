@@ -1,26 +1,33 @@
 .top-bar-child {
-    width: 40px;
+    width: 60px;
     position: relative;
     border-radius: 100px;
-    background-color: rgba(0, 0, 0, 0.1);
-    height: 40px;
+    background-image: url('../assets/logo.png');
+    /* Adjust path */
+    height: 60px;
+    background-size: cover;
+    background-position: center;
 }
+
 .title {
     flex: 1;
     position: relative;
     line-height: 36px;
     font-weight: 500;
 }
+
 .text {
     flex: 1;
     position: relative;
     line-height: 20px;
 }
+
 .ic-search-icon {
     width: 20px;
     position: relative;
     height: 20px;
 }
+
 .textfield {
     width: 200px;
     border-radius: 6px;
@@ -33,15 +40,17 @@
     padding: 8px;
     gap: 4px;
 }
+
 .navigation {
     background-color: #fff;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.5);
+    gap: 40px;
+    font-size: 16px;
 }
+
 .top-bar {
     width: 100%;
     margin: 0 !important;
@@ -64,6 +73,7 @@
     z-index: 0;
     font-size: 28px;
 }
+
 .icon {
     position: absolute;
     top: calc(50% - 12px);
@@ -78,6 +88,7 @@
     width: 24px;
     height: 24px;
 }
+
 .frame {
     width: 24px;
     position: relative;
@@ -85,6 +96,7 @@
     background-color: rgba(0, 0, 0, 0.05);
     height: 24px;
 }
+
 .title1 {
     flex: 1;
     position: relative;
@@ -93,6 +105,7 @@
     font-weight: 500;
     text-align: left;
 }
+
 .item {
     align-self: stretch;
     display: flex;
@@ -102,6 +115,7 @@
     padding: 16px 20px;
     gap: 12px;
 }
+
 .sidebar {
     width: 220px;
     margin: 0 !important;
@@ -122,6 +136,7 @@
     text-align: center;
     font-size: 15px;
 }
+
 .avatar {
     width: 100px;
     position: relative;
@@ -132,15 +147,18 @@
     flex-shrink: 0;
     z-index: 0;
 }
+
 .title6 {
     align-self: stretch;
     position: relative;
     line-height: 32px;
 }
+
 .label-text {
     position: relative;
     line-height: 16px;
 }
+
 .label-normal {
     border-radius: 2px;
     background-color: rgba(217, 217, 217, 0.5);
@@ -152,6 +170,7 @@
     justify-content: center;
     padding: 2px 4px;
 }
+
 .selection {
     align-self: stretch;
     overflow: hidden;
@@ -162,12 +181,14 @@
     gap: 6px;
     font-size: 12px;
 }
+
 .description {
     align-self: stretch;
     position: relative;
     font-size: 16px;
     line-height: 24px;
 }
+
 .container {
     flex: 1;
     display: flex;
@@ -177,6 +198,7 @@
     gap: 12px;
     z-index: 1;
 }
+
 .section-child {
     width: 100%;
     position: absolute;
@@ -189,6 +211,7 @@
     max-height: 100%;
     z-index: 2;
 }
+
 .section {
     align-self: stretch;
     overflow: hidden;
@@ -198,16 +221,19 @@
     justify-content: center;
     padding: 60px;
     position: relative;
+    margin-top: 20px;
     gap: 40px;
     z-index: 2;
     font-size: 24px;
 }
+
 .title7 {
     width: 520px;
     position: relative;
     line-height: 48px;
     display: inline-block;
 }
+
 .description1 {
     width: 520px;
     position: relative;
@@ -215,6 +241,7 @@
     line-height: 24px;
     display: inline-block;
 }
+
 .container2 {
     flex: 1;
     display: flex;
@@ -223,6 +250,7 @@
     justify-content: flex-start;
     gap: 24px;
 }
+
 .container1 {
     align-self: stretch;
     display: flex;
@@ -233,6 +261,7 @@
     text-align: center;
     font-size: 40px;
 }
+
 .title8 {
     align-self: stretch;
     position: relative;
@@ -242,6 +271,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .data {
     position: relative;
     font-size: 28px;
@@ -251,6 +281,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .change {
     position: relative;
     line-height: 24px;
@@ -258,6 +289,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .metric {
     flex: 1;
     border-radius: 6px;
@@ -270,6 +302,7 @@
     padding: 16px;
     gap: 4px;
 }
+
 .row {
     align-self: stretch;
     display: flex;
@@ -278,6 +311,7 @@
     justify-content: flex-start;
     gap: 20px;
 }
+
 .list {
     align-self: stretch;
     display: flex;
@@ -286,6 +320,7 @@
     justify-content: center;
     z-index: 1;
 }
+
 .title11 {
     align-self: stretch;
     position: relative;
@@ -294,11 +329,13 @@
     font-weight: 500;
     color: #000;
 }
+
 .y-axis {
     align-self: stretch;
     position: relative;
     line-height: 24px;
 }
+
 .graph-icon {
     align-self: stretch;
     flex: 1;
@@ -307,12 +344,14 @@
     overflow: hidden;
     max-height: 100%;
 }
+
 .x-axis {
     align-self: stretch;
     position: relative;
     line-height: 24px;
     text-align: right;
 }
+
 .container4 {
     align-self: stretch;
     flex: 1;
@@ -325,6 +364,7 @@
     padding: 20px;
     gap: 12px;
 }
+
 .container3 {
     align-self: stretch;
     height: 440px;
@@ -335,6 +375,7 @@
     z-index: 2;
     color: rgba(0, 0, 0, 0.5);
 }
+
 .data-metrics-child {
     width: 100%;
     position: absolute;
@@ -347,6 +388,7 @@
     max-height: 100%;
     z-index: 3;
 }
+
 .data-metrics {
     align-self: stretch;
     overflow: hidden;
@@ -360,6 +402,7 @@
     z-index: 3;
     font-size: 16px;
 }
+
 .container5 {
     align-self: stretch;
     display: flex;
@@ -369,6 +412,7 @@
     gap: 24px;
     z-index: 0;
 }
+
 .icon5 {
     position: absolute;
     top: calc(50% - 50px);
@@ -383,6 +427,7 @@
     width: 100px;
     height: 100px;
 }
+
 .frame5 {
     width: 100px;
     position: relative;
@@ -390,11 +435,13 @@
     background-color: rgba(0, 0, 0, 0.05);
     height: 100px;
 }
+
 .title13 {
     align-self: stretch;
     position: relative;
     line-height: 28px;
 }
+
 .subtitle {
     align-self: stretch;
     position: relative;
@@ -402,6 +449,7 @@
     line-height: 24px;
     color: rgba(0, 0, 0, 0.5);
 }
+
 .title-parent {
     align-self: stretch;
     display: flex;
@@ -411,6 +459,7 @@
     gap: 8px;
     font-size: 20px;
 }
+
 .subtitle1 {
     align-self: stretch;
     position: relative;
@@ -418,6 +467,7 @@
     line-height: 36px;
     font-weight: 500;
 }
+
 .item5 {
     flex: 1;
     display: flex;
@@ -427,6 +477,7 @@
     padding: 12px 0px;
     gap: 20px;
 }
+
 .row1 {
     align-self: stretch;
     display: flex;
@@ -435,6 +486,7 @@
     justify-content: flex-start;
     gap: 40px;
 }
+
 .list2 {
     align-self: stretch;
     display: flex;
@@ -444,6 +496,7 @@
     z-index: 1;
     font-size: 62.5px;
 }
+
 .list1 {
     align-self: stretch;
     overflow: hidden;
@@ -457,12 +510,14 @@
     z-index: 4;
     text-align: center;
 }
+
 .image {
     align-self: stretch;
     flex: 1;
     position: relative;
     background-color: rgba(217, 217, 217, 0.5);
 }
+
 .image-container {
     width: 180px;
     height: 180px;
@@ -473,11 +528,13 @@
     align-items: flex-start;
     justify-content: flex-start;
 }
+
 .title16 {
     align-self: stretch;
     position: relative;
     line-height: 48px;
 }
+
 .container6 {
     align-self: stretch;
     display: flex;
@@ -487,6 +544,7 @@
     gap: 60px;
     z-index: 0;
 }
+
 .title17 {
     align-self: stretch;
     position: relative;
@@ -494,6 +552,7 @@
     font-weight: 500;
     color: #000;
 }
+
 .text1 {
     flex: 1;
     position: relative;
@@ -504,6 +563,7 @@
     white-space: nowrap;
     height: 20px;
 }
+
 .textfield1 {
     align-self: stretch;
     border-radius: 6px;
@@ -515,12 +575,14 @@
     justify-content: flex-start;
     padding: 8px 12px;
 }
+
 .info {
     align-self: stretch;
     position: relative;
     font-size: 12px;
     line-height: 16px;
 }
+
 .input {
     width: 510px;
     overflow: hidden;
@@ -531,12 +593,14 @@
     justify-content: center;
     gap: 4px;
 }
+
 .title18 {
     align-self: stretch;
     position: relative;
     line-height: 20px;
     font-weight: 500;
 }
+
 .textfield2 {
     align-self: stretch;
     border-radius: 6px;
@@ -549,6 +613,7 @@
     padding: 8px 12px;
     color: rgba(0, 0, 0, 0.5);
 }
+
 .input1 {
     width: 510px;
     overflow: hidden;
@@ -560,6 +625,7 @@
     gap: 4px;
     color: #000;
 }
+
 .row2 {
     align-self: stretch;
     display: flex;
@@ -568,11 +634,13 @@
     justify-content: flex-start;
     gap: 80px;
 }
+
 .title19 {
     position: relative;
     line-height: 24px;
     font-weight: 500;
 }
+
 .primary {
     width: 240px;
     border-radius: 8px;
@@ -584,6 +652,7 @@
     padding: 12px;
     box-sizing: border-box;
 }
+
 .button {
     overflow: hidden;
     display: flex;
@@ -593,6 +662,7 @@
     font-size: 16px;
     color: #fff;
 }
+
 .list3 {
     align-self: stretch;
     display: flex;
@@ -604,6 +674,7 @@
     font-size: 14px;
     color: rgba(0, 0, 0, 0.5);
 }
+
 .form {
     align-self: stretch;
     overflow: hidden;
@@ -616,6 +687,7 @@
     gap: 60px;
     z-index: 5;
 }
+
 .title20 {
     position: absolute;
     width: calc(100% - 32px);
@@ -627,6 +699,7 @@
     justify-content: center;
     height: 16px;
 }
+
 .pagination-child {
     width: 20px;
     position: relative;
@@ -634,6 +707,7 @@
     background-color: #fff;
     height: 4px;
 }
+
 .pagination-item {
     width: 4px;
     position: relative;
@@ -641,6 +715,7 @@
     background-color: rgba(0, 0, 0, 0.3);
     height: 4px;
 }
+
 .pagination {
     position: absolute;
     bottom: 8px;
@@ -651,6 +726,7 @@
     justify-content: center;
     gap: 4px;
 }
+
 .image1 {
     align-self: stretch;
     flex: 1;
@@ -658,6 +734,7 @@
     border-radius: 6px;
     background-color: rgba(217, 217, 217, 0.5);
 }
+
 .section-item {
     width: 100%;
     position: absolute;
@@ -670,6 +747,7 @@
     max-height: 100%;
     z-index: 1;
 }
+
 .section1 {
     align-self: stretch;
     overflow: hidden;
@@ -684,6 +762,7 @@
     text-align: center;
     font-size: 12px;
 }
+
 .image-icon {
     position: absolute;
     top: calc(50% - 550px);
@@ -692,6 +771,7 @@
     height: 1100px;
     overflow: hidden;
 }
+
 .title21 {
     position: absolute;
     width: calc(100% - 32px);
@@ -701,6 +781,7 @@
     font-weight: 500;
     display: inline-block;
 }
+
 .ic-location-icon {
     position: absolute;
     top: calc(50% - 24px);
@@ -708,6 +789,7 @@
     width: 24px;
     height: 24px;
 }
+
 .image2 {
     align-self: stretch;
     flex: 1;
@@ -715,6 +797,7 @@
     border-radius: 6px;
     background-color: rgba(0, 0, 0, 0.05);
 }
+
 .map-container {
     flex: 1;
     height: 300px;
@@ -727,6 +810,7 @@
     box-sizing: border-box;
     z-index: 0;
 }
+
 .section2 {
     align-self: stretch;
     overflow: hidden;
@@ -741,6 +825,7 @@
     text-align: center;
     font-size: 16px;
 }
+
 .container8 {
     flex: 1;
     display: flex;
@@ -750,6 +835,7 @@
     gap: 24px;
     z-index: 0;
 }
+
 .avatar2 {
     width: 32px;
     position: relative;
@@ -759,6 +845,7 @@
     overflow: hidden;
     flex-shrink: 0;
 }
+
 .title23 {
     align-self: stretch;
     position: relative;
@@ -768,6 +855,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .title-wrapper {
     flex: 1;
     display: flex;
@@ -775,6 +863,7 @@
     align-items: flex-start;
     justify-content: flex-start;
 }
+
 .avatar1 {
     flex: 1;
     display: flex;
@@ -783,11 +872,13 @@
     justify-content: flex-start;
     gap: 8px;
 }
+
 .user-child {
     width: 58.3px;
     position: relative;
     height: 9.8px;
 }
+
 .user {
     align-self: stretch;
     display: flex;
@@ -796,6 +887,7 @@
     justify-content: flex-start;
     gap: 4px;
 }
+
 .title24 {
     align-self: stretch;
     position: relative;
@@ -804,9 +896,10 @@
     display: -webkit-inline-box;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* -webkit-line-clamp: 3; */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
 }
+
 .card {
     flex: 1;
     border-radius: 6px;
@@ -819,6 +912,7 @@
     padding: 16px;
     gap: 16px;
 }
+
 .list4 {
     flex: 1;
     display: flex;
@@ -829,6 +923,7 @@
     z-index: 1;
     font-size: 14px;
 }
+
 .reviews {
     align-self: stretch;
     overflow: hidden;
@@ -841,6 +936,7 @@
     gap: 60px;
     z-index: 8;
 }
+
 .title27 {
     align-self: stretch;
     width: 390px;
@@ -851,6 +947,7 @@
     justify-content: center;
     flex-shrink: 0;
 }
+
 .title28 {
     align-self: stretch;
     width: 288px;
@@ -861,6 +958,7 @@
     justify-content: center;
     flex-shrink: 0;
 }
+
 .container9 {
     height: 100px;
     display: flex;
@@ -869,6 +967,7 @@
     justify-content: center;
     gap: 60px;
 }
+
 .section3 {
     align-self: stretch;
     overflow: hidden;
@@ -881,6 +980,7 @@
     text-align: center;
     font-size: 20px;
 }
+
 .homepage {
     width: 100%;
     position: relative;
@@ -889,11 +989,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 80px 0px 0px 220px;
+    padding: 80px 0px 0px 0px;
     box-sizing: border-box;
     text-align: left;
     font-size: 40px;
     color: #000;
     font-family: Roboto;
 }
-

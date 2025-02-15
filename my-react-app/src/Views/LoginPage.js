@@ -23,18 +23,25 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // ✅ Call API to verify credentials
+      // ✅ Call API for authentication
       const response = await axios.post('http://localhost:3001/login', {
         username,
         password,
       });
 
       if (response.data.success) {
-        const { role } = response.data;
+        const { token, role } = response.data;
+
+        // ✅ Store JWT Token in Local Storage
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', role); // Store role for UI purposes
 
         // ✅ Navigate based on role
-        if (role === 'Manager') {
-          navigate('/manager-dashboard');
+        if (role === 'Admin') {
+          navigate('/admin');
+        }
+        else if (role === 'Manager') {
+          navigate('/trainer-dashboardshboard');
         } else {
           navigate('/homepage');
         }

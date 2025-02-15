@@ -73,7 +73,7 @@ const AddTrainer = () => {
         <option value="Trainer">Trainer</option>
         <option value="Trainee">Trainee</option>
         <option value="Manager">Manager</option>
-        <option value="Employee">Employee</option>
+        <option value="Admin">Admin</option>
       </select>
 
       <button type="submit">Add Trainer</button>

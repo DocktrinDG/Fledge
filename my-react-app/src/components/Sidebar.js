@@ -1,22 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './Sidebar.css';
+import {
+  CDBSidebar,
+  CDBSidebarContent,
+  CDBSidebarHeader,
+  CDBSidebarMenu,
+  CDBSidebarMenuItem,
+  CDBSidebarFooter,
+} from 'cdbreact';
 
 const Sidebar = () => {
   return (
-    <div className="sidebar">
-      <div className="sidebar-logo">
-        <h2>Admin</h2>
-      </div>
-      <ul className="sidebar-menu">
-        <li><Link to="/">Dashboard</Link></li>
-        <li><Link to="/add-trainer">Add Trainer</Link></li>
-        <li><Link to="/add-trainee">Add Trainee</Link></li>
-        <li><Link to="/add-batch">Add Batch</Link></li>
-        <li><Link to="/assign-trainer">Assign Trainer</Link></li>
-        <li><Link to="/assign-trainee">Assign Trainee</Link></li>
-      </ul>
-    </div>
+      <CDBSidebar>
+        <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>Contrast</CDBSidebarHeader>
+        <CDBSidebarContent>
+          <CDBSidebarMenu>
+            <CDBSidebarMenuItem icon="th-large">Dashboard</CDBSidebarMenuItem>
+            <CDBSidebarMenuItem icon="sticky-note">Components</CDBSidebarMenuItem>
+            <CDBSidebarMenuItem icon="credit-card" iconType="solid">
+              Metrics
+            </CDBSidebarMenuItem>
+          </CDBSidebarMenu>
+        </CDBSidebarContent>
+
+        <CDBSidebarFooter style={{ textAlign: 'center' }}>
+          <div
+            className="sidebar-btn-wrapper"
+            style={{padding: '20px 5px'}}
+          >
+            Sidebar Footer
+          </div>
+        </CDBSidebarFooter>
+      </CDBSidebar>
   );
 };
 

@@ -1,0 +1,418 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* 🟢 Top Bar */
+.top-bar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+    z-index: 1000;
+}
+
+.top-bar-child {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-image: url('../assets/logo.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.navigation {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* 🟢 Buttons */
+.tab {
+    background-color: rgb(231, 231, 231);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.tab:hover {
+    background-color: rgb(200, 200, 200);
+}
+
+/* 🔍 Search Bar */
+.textfield {
+    width: 180px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.ic-search-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* 🟢 Page Content */
+.container {
+    max-width: 900px;
+    margin: 100px auto 40px;
+    padding: 0px;
+    text-align: center;
+}
+
+/* 📌 Employee Table */
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.employee-table th,
+.employee-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.employee-table th {
+    background-color: #000;
+    color: white;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.employee-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* ✅ Small & Compact Rows */
+.employee-table td {
+    font-size: 13px;
+    color: #333;
+}
+
+/* 🚀 Centered 'No Data' Message */
+.no-data {
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    padding: 15px;
+}
+
+/* 🔹 Responsive Table */
+@media (max-width: 768px) {
+
+    .employee-table th,
+    .employee-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 10px;
+    }
+}
+
+.back-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.back-button:hover {
+    background-color: #333;
+}
+
+.delete-button {
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+
+.batch-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.batch-table th,
+.batch-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.batch-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.batch-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+
+.no-data {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+}
+
+.back-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+.no-data-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.no-data {
+    font-size: 18px;
+    font-weight: bold;
+    color: gray;
+}
+
+/* 🟢 Modal Overlay - Dim Background */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+/* 🟢 Modal Box */
+.modal {
+    background: white;
+    padding: 25px;
+    width: 40%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1101;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* 🟢 Modal Header */
+.modal h2 {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* 🟢 Close Button */
+.close-modal {
+    background-color: red;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.close-modal:hover {
+    background-color: darkred;
+}
+
+/* 🟢 Form Inputs */
+.modal input,
+.modal select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* 🟢 Multi-Select Styling */
+.modal select[multiple] {
+    height: 80px;
+    overflow-y: auto;
+}
+
+/* 🟢 Submit & Add Batch Buttons */
+.add-batch-button,
+.submit-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.add-batch-button:hover,
+.submit-button:hover {
+    background-color: #218838;
+}
+
+/* 🟢 Table Styling */
+.batch-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.batch-table th,
+.batch-table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.batch-table th {
+    background-color: #000;
+    color: white;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.batch-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.batch-table td {
+    font-size: 13px;
+    color: #333;
+}
+
+/* 🟢 No Data Message */
+.no-data-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.no-data {
+    font-size: 18px;
+    font-weight: bold;
+    color: gray;
+}
+
+/* 🟢 Delete Button */
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+
+/* 🟢 Back Button */
+.back-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+/* 🟢 Add Batch Button */
+.add-batch-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-batch-button:hover {
+    background-color: #218838;
+}

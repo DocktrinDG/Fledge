@@ -1,0 +1,10 @@
+.container {
+    width: 0vh;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.navbar {
+    display: flex;
+    font-size: 20px;
+    gap: 20px;
+}
