@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./css/Trainer.css";
+import Footer from "../components/Footer";
 
 const Trainer = () => {
     const [trainers, setTrainers] = useState([]);
@@ -42,8 +43,7 @@ const Trainer = () => {
     };
 
     const handleRemoveTrainer = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to remove this trainer?");
-        if (!confirmDelete) return;
+        if (!window.confirm("Are you sure you want to remove this trainer?")) return;
 
         try {
             const token = localStorage.getItem("token");
@@ -83,15 +83,15 @@ const Trainer = () => {
     };
 
     return (
-        <div className="page">
+        <div className="trainer-page">
             {/* 🟢 Top Bar */}
             <div className="top-bar">
                 <div className="top-bar-child" />
-                <div className="title">Trainer Management</div>
+                <h1 className="title">Trainer Management</h1>
                 <div className="navigation">
                     <button className="tab" onClick={() => navigate('/admin/employee')}>Employees</button>
                     <button className="tab" onClick={() => navigate('/admin/batch')}>Batch</button>
-                    <button className="tab">Trainers</button>
+                    <button className="tab active">Trainers</button>
                     <button className="tab" onClick={() => navigate('/admin/trainee')}>Trainees</button>
                 </div>
             </div>
@@ -104,7 +104,7 @@ const Trainer = () => {
                 </div>
 
                 {trainers.length > 0 ? (
-                    <table className="employee-table">
+                    <table className="trainer-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -124,7 +124,7 @@ const Trainer = () => {
                                     <td>{trainer.role}</td>
                                     <td>{trainer.is_trainer === 1 ? "Yes" : "No"}</td>
                                     <td>
-                                        <button className="delete-button" onClick={() => handleRemoveTrainer(trainer.employee_id)}>
+                                        <button className="remove-button" onClick={() => handleRemoveTrainer(trainer.employee_id)}>
                                             Remove
                                         </button>
                                     </td>
@@ -142,7 +142,7 @@ const Trainer = () => {
                 <div className="modal-overlay">
                     <div className="modal">
                         <h2>Promote Employee to Trainer</h2>
-                        <select value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
+                        <select className="modal-select" value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
                             <option value="">Select an Employee</option>
                             {employees.map((emp) => (
                                 <option key={emp.employee_id} value={emp.employee_id}>
@@ -150,11 +150,15 @@ const Trainer = () => {
                                 </option>
                             ))}
                         </select>
-                        <button className="submit-button" onClick={handleAddTrainer}>Make Trainer</button>
-                        <button className="close-modal" onClick={() => setShowModal(false)}>Close</button>
+                        <div className="modal-buttons">
+                            <button className="confirm-button" onClick={handleAddTrainer}>Make Trainer</button>
+                            <button className="cancel-button" onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}
+
+            <Footer />
         </div>
     );
 };

@@ -2,26 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./css/Trainee.css";
+import Footer from "../components/Footer";
 
 const Trainee = () => {
-    const [trainees, settrainees] = useState([]);
+    const [trainees, setTrainees] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchtrainees();
+        fetchTrainees();
         fetchEmployees();
     }, []);
 
-    const fetchtrainees = async () => {
+    const fetchTrainees = async () => {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.get("http://localhost:3001/employees/trainees", {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            settrainees(response.data);
+            setTrainees(response.data);
         } catch (error) {
             console.error("Error fetching trainees:", error);
         }
@@ -34,16 +35,15 @@ const Trainee = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            const nontrainees = response.data.filter(emp => emp.is_trainee === 0);
-            setEmployees(nontrainees);
+            const nonTrainees = response.data.filter(emp => emp.is_trainee === 0);
+            setEmployees(nonTrainees);
         } catch (error) {
             console.error("Error fetching employees:", error);
         }
     };
 
-    const handleRemovetrainee = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to remove this trainee?");
-        if (!confirmDelete) return;
+    const handleRemoveTrainee = async (id) => {
+        if (!window.confirm("Are you sure you want to remove this trainee?")) return;
 
         try {
             const token = localStorage.getItem("token");
@@ -51,9 +51,9 @@ const Trainee = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            settrainees(trainees.filter((trainee) => trainee.employee_id !== id));
+            setTrainees(trainees.filter((trainee) => trainee.employee_id !== id));
             fetchEmployees(); // Refresh list after removal
-            alert("trainee removed successfully!");
+            alert("Trainee removed successfully!");
         } catch (error) {
             console.error("Error removing trainee:", error);
             alert("Failed to remove trainee.");
@@ -74,7 +74,7 @@ const Trainee = () => {
 
             alert("Employee is now a Trainee!");
             setShowModal(false);
-            fetchtrainees();
+            fetchTrainees();
             fetchEmployees();
         } catch (error) {
             console.error("Error making trainee:", error);
@@ -83,20 +83,20 @@ const Trainee = () => {
     };
 
     return (
-        <div className="page">
+        <div className="trainee-page">
             {/* 🟢 Top Bar */}
             <div className="top-bar">
                 <div className="top-bar-child" />
-                <div className="title">trainee Management</div>
+                <h1 className="title">Trainee Management</h1>
                 <div className="navigation">
                     <button className="tab" onClick={() => navigate('/admin/employee')}>Employees</button>
                     <button className="tab" onClick={() => navigate('/admin/batch')}>Batch</button>
                     <button className="tab" onClick={() => navigate('/admin/trainer')}>Trainers</button>
-                    <button className="tab" >Trainees</button>
+                    <button className="tab active">Trainees</button>
                 </div>
             </div>
 
-            {/* 🟢 trainee List */}
+            {/* 🟢 Trainee List */}
             <div className="container">
                 <div className="header">
                     <h2>All Trainees</h2>
@@ -104,7 +104,7 @@ const Trainee = () => {
                 </div>
 
                 {trainees.length > 0 ? (
-                    <table className="employee-table">
+                    <table className="trainee-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -124,7 +124,7 @@ const Trainee = () => {
                                     <td>{trainee.role}</td>
                                     <td>{trainee.is_trainee === 1 ? "Yes" : "No"}</td>
                                     <td>
-                                        <button className="delete-button" onClick={() => handleRemovetrainee(trainee.employee_id)}>
+                                        <button className="remove-button" onClick={() => handleRemoveTrainee(trainee.employee_id)}>
                                             Remove
                                         </button>
                                     </td>
@@ -137,12 +137,12 @@ const Trainee = () => {
                 )}
             </div>
 
-            {/* 🟢 Add trainee Modal */}
+            {/* 🟢 Add Trainee Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h2>Promote Employee to trainee</h2>
-                        <select value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
+                        <h2>Promote Employee to Trainee</h2>
+                        <select className="modal-select" value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
                             <option value="">Select an Employee</option>
                             {employees.map((emp) => (
                                 <option key={emp.employee_id} value={emp.employee_id}>
@@ -150,11 +150,15 @@ const Trainee = () => {
                                 </option>
                             ))}
                         </select>
-                        <button className="submit-button" onClick={handleAddTrainee}>Make Trainee</button>
-                        <button className="close-modal" onClick={() => setShowModal(false)}>Close</button>
+                        <div className="modal-buttons">
+                            <button className="confirm-button" onClick={handleAddTrainee}>Make Trainee</button>
+                            <button className="cancel-button" onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}
+
+            <Footer />
         </div>
     );
 };

@@ -6,15 +6,17 @@ const bcrypt = require('bcrypt');
 const multer = require("multer");
 const path = require("path");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const app = express();
 const port = 3001;
+const xlsx = require("xlsx");
 // Middleware
 app.use(cors());  // Enable CORS for all origins
 app.use(bodyParser.json());  // To parse JSON request bodies
 const SECRET_KEY = process.env.JWT_SECRET || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
-
+const directLineSecret = "9sfJsjrgx3ayikfYKFqFaGYaqjEtyqYtBdnOdGkfuWz40z8AyFr2JQQJ99BBACi5YpzAArohAAABAZBSfeFj.FK1JY0ayJdIEGBBLdZiu8xcgdXtk9g8D7E7caXZO3uUzV23kjdE4JQQJ99BBACi5YpzAArohAAABAZBS1fYC";
 
 
 // Email Configuration**
@@ -193,16 +195,19 @@ app.delete("/employee/:id", verifyToken, (req, res) => {
     });
 });
 
-app.get('/getAllTraining', (req, res) => {
-    const query = 'SELECT * FROM Training';
+//get all training by trainer
+app.get('/getAllTraining', verifyToken, (req, res) => {
+    const employeeId = req.user.employee_id; // Extract from JWT token
+    console.log("Employee ID from Token:", employeeId); // Debugging
 
-    db.all(query, [], (err, rows) => {
+    const query = 'SELECT * FROM Training WHERE created_by = ?';
+
+    db.all(query, [employeeId], (err, rows) => {
         if (err) {
             console.error('Error fetching Training:', err.message);
             return res.status(500).json({ error: 'Failed to retrieve training.' });
         }
-
-        // Send the array of employees
+        console.log("Trainings fetched:", rows); // Debugging
         res.status(200).json(rows);
     });
 });
@@ -240,38 +245,88 @@ app.post('/employee_skills', (req, res) => {
 });
 
 // Create a training program
-app.post('/trainings', (req, res) => {
-    const { training_name, description, documentation_url, created_by } = req.body;
+app.post("/trainings", verifyToken, (req, res) => {
+    const { training_name, description, documentation_url } = req.body;
+    const created_by = req.user.employee_id; // Get employee ID from token
 
-    const query = 'INSERT INTO Training (training_name, description, documentation_url, created_by) VALUES (?, ?, ?, ?)';
+    if (!training_name) {
+        return res.status(400).json({ error: "Training name is required." });
+    }
+
+    const query = `
+        INSERT INTO Training (training_name, description, documentation_url, created_by)
+        VALUES (?, ?, ?, ?)
+    `;
+
     db.run(query, [training_name, description, documentation_url, created_by], function (err) {
         if (err) {
-            console.error('Error creating training program:', err.message);
-            return res.status(500).json({ error: 'Failed to create training program.' });
+            console.error("Error creating training:", err.message);
+            return res.status(500).json({ error: "Failed to create training." });
         }
         res.status(201).json({
-            id: this.lastID,
+            training_id: this.lastID,
             training_name,
             description,
             documentation_url,
-            created_by
+            created_by,
+            message: "Training created successfully!",
         });
     });
 });
 
-// Enrollment (assign employee to training)
-app.post('/enrollments', (req, res) => {
-    const { employee_id, training_id } = req.body;
+/**
+ * 🟢 Delete a training program by ID (only if created by the logged-in user)
+ */
+app.delete("/trainings/:id", verifyToken, (req, res) => {
+    const trainingId = req.params.id;
+    const employeeId = req.user.employee_id; // Get employee ID from token
 
-    const query = 'INSERT INTO Enrollment (employee_id, training_id) VALUES (?, ?)';
-    db.run(query, [employee_id, training_id], function (err) {
+    const query = `DELETE FROM Training WHERE training_id = ? AND created_by = ?`;
+
+    db.run(query, [trainingId, employeeId], function (err) {
         if (err) {
-            console.error('Error enrolling employee in training:', err.message);
-            return res.status(500).json({ error: 'Failed to enroll employee in training.' });
+            console.error("Error deleting training:", err.message);
+            return res.status(500).json({ error: "Failed to delete training." });
         }
-        res.status(201).json({ id: this.lastID, employee_id, training_id });
+        if (this.changes === 0) {
+            return res.status(404).json({ error: "Training not found or you do not have permission to delete it." });
+        }
+        res.status(200).json({ message: "Training deleted successfully!" });
     });
 });
+
+// Enrollment (assign employee to training)
+app.get('/enrollments', verifyToken, (req, res) => {
+    const query = `
+        SELECT E.enrollment_id, EMP.first_name, EMP.last_name, T.training_name, E.status
+        FROM Enrollment E
+        JOIN Employee EMP ON E.employee_id = EMP.employee_id
+        JOIN Training T ON E.training_id = T.training_id
+    `;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching enrollments:', err.message);
+            return res.status(500).json({ error: 'Failed to fetch enrollments.' });
+        }
+        res.json(rows);
+    });
+});
+
+app.post('/enrollments', verifyToken, (req, res) => {
+    const { employee_id, training_id } = req.body;
+
+    const query = `INSERT INTO Enrollment (employee_id, training_id, status) VALUES (?, ?, 'Pending')`;
+
+    db.run(query, [employee_id, training_id], function (err) {
+        if (err) {
+            console.error('Error enrolling trainee:', err.message);
+            return res.status(500).json({ error: 'Failed to enroll trainee.' });
+        }
+        res.status(201).json({ message: 'Trainee enrolled successfully!' });
+    });
+});
+
 
 //to create batch
 app.get('/batches', (req, res) => {
@@ -537,7 +592,7 @@ app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     const query = `
-        SELECT U.password, E.role, U.employee_id 
+        SELECT U.password, E.role, E.is_trainer, U.employee_id 
         FROM User U 
         JOIN Employee E ON U.employee_id = E.employee_id
         WHERE U.username = ?
@@ -558,11 +613,11 @@ app.post('/login', (req, res) => {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ employee_id: user.employee_id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ employee_id: user.employee_id, role: user.role, is_trainer: user.is_trainer }, SECRET_KEY, { expiresIn: '1h' });
 
         console.log("Generated Token:", token); // Debugging: Check if token is created
 
-        res.status(200).json({ success: true, token, role: user.role });
+        res.status(200).json({ success: true, token, role: user.role, is_trainer: user.is_trainer });
     });
 });
 
@@ -614,7 +669,7 @@ app.put("/employee/:id/make-trainee", (req, res) => {
     const { id } = req.params;
 
     console.log("reached make trainee");
-    
+
     const query = "UPDATE Employee SET is_trainee = 1 WHERE employee_id = ?";
     db.run(query, [id], function (err) {
         if (err) {
@@ -652,6 +707,123 @@ app.put("/employee/:id/remove-trainee", (req, res) => {
         res.status(200).json({ message: "Trainee removed successfully!" });
     });
 });
+
+//upload marks for analysis
+app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const filePath = req.file.path;
+        const workbook = xlsx.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = xlsx.utils.sheet_to_json(sheet, { raw: true });
+
+        console.log("Excel Data:", jsonData); // Debugging
+
+        // Validate required columns
+        if (!jsonData.length || !jsonData[0].Email) {
+            return res.status(400).json({ error: "Invalid file format. Ensure 'Email' column exists." });
+        }
+
+        console.log("Processing marks...");
+
+        // Process each row
+        jsonData.forEach((row) => {
+            const email = row.Email?.trim().toLowerCase(); // Normalize case & trim spaces
+            const sql = row.SQL || row.sql || 0; // Handle case variations
+            const tosca = row.TOSCA || row.tosca || 0;
+
+            if (!email) return;
+
+            // Step 1: Find trainee's employee_id using email
+            const findEmployeeQuery = `SELECT employee_id FROM Employee WHERE LOWER(email) = ? AND is_trainee = 1`;
+
+            db.get(findEmployeeQuery, [email], (err, employee) => {
+                if (err) {
+                    console.error("Error finding employee:", err.message);
+                    return;
+                }
+                if (!employee) {
+                    console.warn(`No trainee found for email: ${email}`);
+                    return;
+                }
+
+                const employeeId = employee.employee_id;
+
+                // Step 2: Insert marks into employee_marks table
+                const insertMarksQuery = `
+                    INSERT INTO employee_marks (employee_id, sql, tosca)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT(employee_id) 
+                    DO UPDATE SET sql = excluded.sql, tosca = excluded.tosca;
+                `;
+
+
+                db.run(insertMarksQuery, [employeeId, sql, tosca], (err) => {
+                    if (err) {
+                        console.error("Error inserting marks:", err.message);
+                    } else {
+                        console.log(`Marks inserted for ${email} (ID: ${employeeId})`);
+                    }
+                });
+            });
+        });
+
+        res.status(200).json({ message: "Marks processed successfully!" });
+
+    } catch (error) {
+        console.error("Error processing marks:", error);
+        res.status(500).json({ error: "Failed to process marks." });
+    }
+});
+
+app.get("/employee-marks", (req, res) => {
+    const query = `
+        SELECT E.first_name, E.last_name, M.sql, M.tosca 
+        FROM employee_marks M
+        JOIN Employee E ON M.employee_id = E.employee_id
+        WHERE E.is_trainee = 1
+    `;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error("Error fetching performance data:", err.message);
+            return res.status(500).json({ error: "Failed to retrieve performance data." });
+        }
+
+        res.status(200).json(rows);
+    });
+});
+
+//AI Agent
+app.get("/token", async (req, res) => {
+    try {
+        const response = await axios.post(
+            "https://directline.botframework.com/v3/directline/tokens/generate",
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${directLineSecret}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        if (response.status === 200) {
+            res.json(response.data); // Send the token as JSON
+        } else {
+            res.status(response.status).json({ error: "Failed to generate token" });
+        }
+    } catch (error) {
+        console.error("Error fetching token:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
 
 // Handle 404 (Not Found) errors for any other routes
 app.use((req, res, next) => {

@@ -148,6 +148,16 @@ const createTables = () => {
         FOREIGN KEY (training_id) REFERENCES Training(training_id) ON DELETE CASCADE
       );
     `);
+
+    db.run(`
+    CREATE TABLE IF NOT EXISTS employee_marks (
+        mark_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        employee_id INTEGER NOT NULL UNIQUE,  -- 🔹 Make employee_id UNIQUE
+        sql INTEGER DEFAULT 0,
+        tosca INTEGER DEFAULT 0,
+        FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
+    );
+  `);
   });
 };
 

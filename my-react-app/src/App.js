@@ -15,8 +15,8 @@ import AdminDashboard from './Views/Admin/AdminDashboard';
 import Batch from './Views/Batch';
 import Trainee from './Views/Trainee';
 import Trainer from './Views/Trainer';
-
-
+import Training from './Views/Training';
+import FledeAgent from './services/FledgeAgent'
 
 const App = () => {
   return (
@@ -32,12 +32,14 @@ const App = () => {
         <Route path="/upload-certification" element={< UploadCertification/>} />
         <Route path="/homepage" element={< Homepage/>} />
         <Route path="/trainer-dashboard" element={< TrainerDashboard/>} />
+        <Route path="/trainer-dashboard/training" element={< Training/>} />
+
         <Route path="/admin" element={< AdminDashboard/>} />
         <Route path="/admin/employee" element={<ViewAllEmployees />} />
         <Route path="/admin/batch" element={<Batch />} />
         <Route path="/admin/trainer" element={<Trainer />} />
         <Route path="/admin/trainee" element={<Trainee />} />
-
+        <Route path="/ai-agent" element={< FledeAgent/>} />
       </Routes>
     </Router>
   );

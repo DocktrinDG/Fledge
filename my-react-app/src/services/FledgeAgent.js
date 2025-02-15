@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { DirectLine } from 'botframework-directlinejs';
 import axios from 'axios';
 
-const App = () => {
+const FledeAgent = () => {
   const [directLine, setDirectLine] = useState(null);
   const [message, setMessage] = useState('');
   const [conversationId, setConversationId] = useState('');
@@ -11,7 +11,7 @@ const App = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/token');  // FastAPI token endpoint
+        const response = await axios.get('http://localhost:3001/token');  // FastAPI token endpoint
         const token = response.data.token;
         const directLineInstance = new DirectLine({ token });
         setDirectLine(directLineInstance);
@@ -85,4 +85,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default FledeAgent;

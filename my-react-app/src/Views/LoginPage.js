@@ -30,18 +30,20 @@ const LoginPage = () => {
       });
 
       if (response.data.success) {
-        const { token, role } = response.data;
+        const { token, role, is_trainer } = response.data;
 
-        // ✅ Store JWT Token in Local Storage
+        // ✅ Store JWT Token and role in Local Storage
         localStorage.setItem('token', token);
-        localStorage.setItem('role', role); // Store role for UI purposes
+        localStorage.setItem('role', role);
+        localStorage.setItem('is_trainer', is_trainer); // Store trainer status
 
-        // ✅ Navigate based on role
-        if (role === 'Admin') {
+        console.log(is_trainer);
+        
+        // ✅ Navigate logic
+        if (is_trainer === 1) {
+          navigate('/trainer-dashboard'); // Trainer Dashboard
+        } else if (role === 'Admin') {
           navigate('/admin');
-        }
-        else if (role === 'Manager') {
-          navigate('/trainer-dashboardshboard');
         } else {
           navigate('/homepage');
         }

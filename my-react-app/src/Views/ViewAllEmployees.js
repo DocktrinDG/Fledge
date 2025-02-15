@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./css/Dashboard.css";
+import Footer from "../components/Footer"
+
 
 const ViewAllEmployees = () => {
   const [employees, setEmployees] = useState([]);
@@ -97,6 +99,8 @@ const ViewAllEmployees = () => {
           Back to Admin
         </button>
       </div>
+			<Footer />
+
     </div>
   );
 };
