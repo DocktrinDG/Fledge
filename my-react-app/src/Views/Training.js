@@ -102,7 +102,7 @@ const Training = () => {
                 <nav className="navigation">
                     <button className="nav-link" onClick={() => navigate('/trainer-dashboard')}>Home</button>
                     <button className="nav-link">Training</button>
-                    <button className="nav-link">Reports</button>
+                    <button className="nav-link" onClick={() => navigate('/ai-agent')}>Chat Bot</button>
                 </nav>
             </header>
 

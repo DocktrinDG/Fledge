@@ -4,8 +4,17 @@ import axios from "axios";
 import "../css/TrainerDashboard.css";
 import Footer from "../../components/Footer";
 import Chart from "../../components/Chart";  // Import Chart Component
+import { DirectLine } from 'botframework-directlinejs';
+
 
 const TrainerDashboard = () => {
+  //AI-Agent Variables
+  const [directLine, setDirectLine] = useState(null);
+  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [conversationId, setConversationId] = useState('');
+  const [messages, setMessages] = useState([]); // For storing conversation messages
+
   const [batches, setBatches] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
@@ -24,6 +33,37 @@ const TrainerDashboard = () => {
     setFile(e.target.files[0]);
   };
 
+  // const handleUpload = async () => {
+  //   if (!file) {
+  //     alert("Please select a file to upload.");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("marksFile", file); // ✅ Key must match backend field name
+
+  //   try {
+  //     const response = await fetch("http://localhost:3001/upload-marks", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     const result = await response.json(); // Get response message
+
+  //     if (response.ok) {
+  //       alert("Marks uploaded successfully!");
+  //       setPerformanceShowModal(false);
+  //       setFile(null);
+  //     } else {
+  //       console.error("Upload failed:", result.error);
+  //       alert("Failed to upload marks: " + result.error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error uploading marks:", error);
+  //     alert("An error occurred while uploading.");
+  //   }
+  // };
+
   const handleUpload = async () => {
     if (!file) {
       alert("Please select a file to upload.");
@@ -31,7 +71,7 @@ const TrainerDashboard = () => {
     }
 
     const formData = new FormData();
-    formData.append("marksFile", file); // ✅ Key must match backend field name
+    formData.append("marksFile", file);
 
     try {
       const response = await fetch("http://localhost:3001/upload-marks", {
@@ -39,7 +79,28 @@ const TrainerDashboard = () => {
         body: formData,
       });
 
-      const result = await response.json(); // Get response message
+      const result = await response.json();
+      console.log("Upload Response:", result);
+
+      if (!result.trainees || result.trainees.length === 0) {
+        console.error("No trainees found in response.");
+        alert("No trainees found in uploaded file.");
+        return;
+      }
+
+      // ✅ Iterate over trainees and store the email
+      result.trainees.forEach((trainee) => {
+        const prompt = `${trainee.name} has got ${trainee.tosca} in Tosca and ${trainee.sql} in SQL. Please provide a review based on their performance.`;
+
+        // 🔹 Set email and message, then send message
+        setEmail(trainee.email);
+        setMessage(prompt);
+
+        console.log("Email Set:", trainee.email); // Debugging
+        console.log("AI Prompt:", prompt);
+
+        sendMessage(trainee.email, prompt);
+      });
 
       if (response.ok) {
         alert("Marks uploaded successfully!");
@@ -55,13 +116,75 @@ const TrainerDashboard = () => {
     }
   };
 
+  //AI-Agent Token
+  const fetchToken = async () => {
+    try {
+        const response = await axios.get('http://localhost:3001/token');
+        const token = response.data.token;
+        const directLineInstance = new DirectLine({ token });
+        setDirectLine(directLineInstance);
+
+        directLineInstance.connectionStatus$.subscribe(status => {
+            if (status === 2) {
+                setConversationId(directLineInstance.conversationId);
+            }
+        });
+
+        directLineInstance.activity$.subscribe(async activity => {
+            if (activity.type === 'message' && activity.from.id !== 'user') {
+                console.log('Bot says:', activity.text);
+                setMessages(prevMessages => [...prevMessages, { from: 'bot', text: activity.text }]);
+
+                // ✅ Ensure email exists before sending
+                if (email) {
+                    try {
+                        await axios.post("http://localhost:3001/send-email", {
+                            to: email,
+                            subject: "SkillMatrix AI Performance Review",
+                            message: activity.text,
+                        });
+                        console.log("Email sent successfully!");
+                    } catch (emailError) {
+                        console.error("Error sending email:", emailError);
+                    }
+                } else {
+                    console.error("No recipient email found!");
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching token:', error);
+    }
+};
+
   useEffect(() => {
+    fetchToken();
     fetchBatches();
     fetchTrainings();
     fetchEnrollments();
     fetchTrainees();
     fetchPerformanceData();
   }, []);
+
+  //AI Agent
+  const sendMessage = (recipientEmail, aiPrompt) => {
+    console.log(`Sending message: ${aiPrompt} to ${recipientEmail}`);
+
+    if (directLine && aiPrompt) {
+      directLine.postActivity({
+        from: { id: 'user', name: 'User' },
+        type: 'message',
+        text: aiPrompt
+      }).subscribe(
+        id => {
+          console.log('Posted activity, assigned ID:', id);
+        },
+        error => console.error('Error posting activity:', error)
+      );
+
+      setEmail(recipientEmail);
+    }
+};
 
   const fetchPerformanceData = async () => {
     try {
@@ -185,7 +308,7 @@ const TrainerDashboard = () => {
         <nav className="navigation">
           <button className="nav-link" onClick={() => navigate("/trainer-dashboard")}>Home</button>
           <button className="nav-link" onClick={() => navigate("/trainer-dashboard/training")}>Training</button>
-          <button className="nav-link">Reports</button>
+          <button className="nav-link" onClick={() => navigate("/ai-agent")}>Chat Bot</button>
         </nav>
       </header>
 

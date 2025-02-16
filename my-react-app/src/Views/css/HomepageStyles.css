@@ -1,0 +1,761 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+body {
+  	margin: 0; line-height: normal;
+}
+.top-bar-child {
+    width: 40px;
+    position: relative;
+    border-radius: 100px;
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 40px;
+}
+.title {
+    flex: 1;
+    position: relative;
+    line-height: 36px;
+    font-weight: 500;
+}
+.tab {
+    position: relative;
+    line-height: 24px;
+}
+.text {
+    flex: 1;
+    position: relative;
+    line-height: 20px;
+}
+.ic-search-icon {
+    width: 20px;
+    position: relative;
+    height: 20px;
+}
+.textfield {
+    width: 200px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px;
+    gap: 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+}
+.navigation {
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    font-size: 16px;
+}
+.top-bar {
+    width: 100%;
+    margin: 0 !important;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+    height: 80px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+    z-index: 0;
+    font-size: 28px;
+}
+.avatar {
+    width: 100px;
+    position: relative;
+    border-radius: 50px;
+    background-color: rgba(217, 217, 217, 0.5);
+    height: 100px;
+    overflow: hidden;
+    flex-shrink: 0;
+    z-index: 0;
+}
+.title1 {
+    align-self: stretch;
+    position: relative;
+    line-height: 32px;
+}
+.label-text {
+    position: relative;
+    line-height: 16px;
+}
+.label-normal {
+    border-radius: 2px;
+    background-color: rgba(217, 217, 217, 0.5);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+}
+.selection {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    font-size: 12px;
+}
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    z-index: 1;
+}
+.section-child {
+    width: 100%;
+    position: absolute;
+    margin: 0 !important;
+    right: 0px;
+    bottom: -0.5px;
+    left: 0px;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+    z-index: 2;
+}
+.section {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 40px;
+    z-index: 1;
+    font-size: 24px;
+}
+.title2 {
+    width: 520px;
+    position: relative;
+    line-height: 48px;
+    display: inline-block;
+}
+.container1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    text-align: center;
+    font-size: 40px;
+}
+.image {
+    align-self: stretch;
+    flex: 1;
+    position: relative;
+    background-color: rgba(217, 217, 217, 0.5);
+}
+.image-container {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.title3 {
+    align-self: stretch;
+    position: relative;
+    line-height: 28px;
+    font-weight: 500;
+}
+.subtitle {
+    align-self: stretch;
+    position: relative;
+    font-size: 16px;
+    line-height: 24px;
+}
+.title-parent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+}
+.article {
+    flex: 1;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16px;
+    gap: 16px;
+}
+.row {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 40px;
+}
+.row1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.list {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0px;
+    gap: 40px;
+    z-index: 1;
+    text-align: left;
+    font-size: 20px;
+}
+.contents {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 60px;
+    z-index: 2;
+    text-align: center;
+}
+.container3 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+.container2 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+    text-align: center;
+    font-size: 40px;
+}
+.title7 {
+    align-self: stretch;
+    position: relative;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: #000;
+}
+.y-axis {
+    align-self: stretch;
+    position: relative;
+    line-height: 24px;
+}
+.graph-icon {
+    align-self: stretch;
+    flex: 1;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+}
+.x-axis {
+    align-self: stretch;
+    position: relative;
+    line-height: 24px;
+    text-align: right;
+}
+.container5 {
+    align-self: stretch;
+    flex: 1;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 20px;
+    gap: 12px;
+}
+.container4 {
+    align-self: stretch;
+    height: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    z-index: 1;
+    color: rgba(0, 0, 0, 0.5);
+}
+.title8 {
+    align-self: stretch;
+    position: relative;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.data {
+    position: relative;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.change {
+    position: relative;
+    line-height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.metric {
+    flex: 1;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 16px;
+    gap: 4px;
+}
+.row2 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+}
+.list1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+.data-metrics-child {
+    width: 100%;
+    position: absolute;
+    margin: 0 !important;
+    right: 0px;
+    bottom: -0.5px;
+    left: 0px;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+    z-index: 3;
+}
+.data-metrics {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 60px;
+    z-index: 3;
+    font-size: 16px;
+}
+.icon {
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    line-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
+    height: 100px;
+}
+.frame {
+    width: 100px;
+    position: relative;
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.05);
+    height: 100px;
+}
+.title11 {
+    align-self: stretch;
+    position: relative;
+    line-height: 28px;
+}
+.subtitle3 {
+    align-self: stretch;
+    position: relative;
+    font-size: 16px;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.5);
+}
+.frame-div {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+    font-size: 20px;
+}
+.item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0px;
+    gap: 20px;
+}
+.row3 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 40px;
+}
+.list3 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    font-size: 62.5px;
+}
+.list2 {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 60px;
+    z-index: 4;
+    text-align: center;
+}
+.title14 {
+    align-self: stretch;
+    position: relative;
+    line-height: 48px;
+}
+.container7 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 24px;
+    z-index: 0;
+}
+.avatar2 {
+    width: 32px;
+    position: relative;
+    border-radius: 32px;
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 32px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.title15 {
+    align-self: stretch;
+    position: relative;
+    line-height: 20px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.title-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.avatar1 {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+.user-child {
+    width: 58.3px;
+    position: relative;
+    height: 9.8px;
+}
+.user {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.title16 {
+    align-self: stretch;
+    position: relative;
+    font-size: 16px;
+    line-height: 24px;
+    display: -webkit-inline-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.card {
+    flex: 1;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px;
+    gap: 16px;
+}
+.list4 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0px;
+    z-index: 1;
+    font-size: 14px;
+}
+.reviews {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 60px;
+    z-index: 5;
+}
+.title19 {
+    position: absolute;
+    width: calc(100% - 32px);
+    top: calc(50% - 8px);
+    left: 16px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16px;
+}
+.pagination-child {
+    width: 20px;
+    position: relative;
+    border-radius: 100px;
+    background-color: #fff;
+    height: 4px;
+}
+.pagination-item {
+    width: 4px;
+    position: relative;
+    border-radius: 100px;
+    background-color: rgba(0, 0, 0, 0.3);
+    height: 4px;
+}
+.pagination {
+    position: absolute;
+    bottom: 8px;
+    left: calc(50% - 22px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+.image3 {
+    align-self: stretch;
+    flex: 1;
+    position: relative;
+    border-radius: 6px;
+    background-color: rgba(217, 217, 217, 0.5);
+}
+.image-container3 {
+    flex: 1;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 4px 0px;
+    box-sizing: border-box;
+    z-index: 0;
+}
+.section-item {
+    width: 100%;
+    position: absolute;
+    margin: 0 !important;
+    right: 0px;
+    bottom: -0.5px;
+    left: 0px;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+    z-index: 1;
+}
+.section1 {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 170px;
+    position: relative;
+    gap: 60px;
+    z-index: 6;
+    text-align: center;
+    font-size: 12px;
+}
+.title20 {
+    align-self: stretch;
+    width: 390px;
+    position: relative;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.container8 {
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.section2 {
+    align-self: stretch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    z-index: 7;
+    text-align: center;
+    font-size: 20px;
+}
+.employee-profile {
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 80px 0px 0px;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 40px;
+    color: #000;
+    font-family: Roboto;
+}
+
+/* ✅ Table Container */
+.table-container {
+    overflow-x: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Table Styles */
+.certifications-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    color: #333;
+}
+
+/* ✅ Table Header */
+.certifications-table thead {
+    background: #007bff;
+    color: white;
+    text-align: left;
+}
+
+.certifications-table th {
+    padding: 12px;
+    text-transform: uppercase;
+}
+
+/* ✅ Table Body */
+.certifications-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* ✅ Alternating Row Colors */
+.certifications-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* ✅ Hover Effect */
+.certifications-table tbody tr:hover {
+    background-color: #e3f2fd;
+    transition: 0.3s;
+}
+
+/* ✅ No Data Message */
+.no-data-text {
+    text-align: center;
+    font-size: 18px;
+    color: #777;
+    margin-top: 10px;
+}

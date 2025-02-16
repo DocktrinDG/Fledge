@@ -45,6 +45,25 @@ const sendEmail = async (to, username, password) => {
     }
 };
 
+app.post("/send-email", async (req, res) => {
+    const { to, subject, message } = req.body;
+
+    const mailOptions = {
+        from: "nankervis1125@gmail.com",
+        to: to,
+        subject: subject,
+        text: message,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: "Email sent successfully!" });
+    } catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ success: false, error: "Failed to send email." });
+    }
+});
+
 //Verify JWT Token
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -241,6 +260,77 @@ app.post('/employee_skills', (req, res) => {
             return res.status(500).json({ error: 'Failed to assign skill to employee.' });
         }
         res.status(201).json({ employee_id, skill_id });
+    });
+});
+
+// Get Employee's Ongoing Trainings (Protected)
+app.get("/employee/trainings", verifyToken, (req, res) => {
+    const employeeId = req.user?.employee_id; // Ensure extraction from JWT token
+
+    if (!employeeId) {
+        return res.status(401).json({ error: "Unauthorized access. Invalid token." });
+    }
+
+    const query = `
+        SELECT T.training_id, T.training_name, E.status
+        FROM Enrollment E
+        JOIN Training T ON E.training_id = T.training_id
+        WHERE E.employee_id = ? 
+    `;
+
+    db.all(query, [employeeId], (err, rows) => {
+        if (err) {
+            console.error("❌ Error fetching ongoing trainings:", err.message);
+            return res.status(500).json({ error: "Failed to fetch trainings." });
+        }
+        res.status(200).json(rows.length ? rows : []); // Return empty array if no data
+    });
+});
+
+// Get Employee's Certifications (Protected)
+app.get("/employee/certifications", verifyToken, (req, res) => {
+    const employeeId = req.user?.employee_id; // Ensure extraction from JWT token
+
+    if (!employeeId) {
+        return res.status(401).json({ error: "Unauthorized access. Invalid token." });
+    }
+
+    const query = `
+        SELECT certification_name, issued_by, issue_date, expiry_date
+        FROM Certification
+        WHERE employee_id = ?
+        ORDER BY issue_date DESC;  -- Show most recent first
+    `;
+
+    db.all(query, [employeeId], (err, rows) => {
+        if (err) {
+            console.error("❌ Error fetching certifications:", err.message);
+            return res.status(500).json({ error: "Failed to fetch certifications." });
+        }
+        res.status(200).json(rows.length ? rows : []); // Return empty array if no data
+    });
+});
+
+// Add New Certification for Employee
+app.post("/employee/certifications", verifyToken, (req, res) => {
+    const employeeId = req.user?.employee_id;  // Ensure valid employee_id
+    const { certification_name, issued_by, issue_date, expiry_date } = req.body;
+
+    if (!certification_name || !issued_by || !issue_date) {
+        return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    const query = `
+        INSERT INTO Certification (employee_id, certification_name, issued_by, issue_date, expiry_date)
+        VALUES (?, ?, ?, ?, ?);
+    `;
+
+    db.run(query, [employeeId, certification_name, issued_by, issue_date, expiry_date || null], function (err) {
+        if (err) {
+            console.error("Error adding certification:", err.message);
+            return res.status(500).json({ error: "Failed to add certification." });
+        }
+        res.status(201).json({ message: "Certification added successfully!" });
     });
 });
 
@@ -709,6 +799,77 @@ app.put("/employee/:id/remove-trainee", (req, res) => {
 });
 
 //upload marks for analysis
+// app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
+//     try {
+//         if (!req.file) {
+//             return res.status(400).json({ error: "No file uploaded" });
+//         }
+
+//         const filePath = req.file.path;
+//         const workbook = xlsx.readFile(filePath);
+//         const sheetName = workbook.SheetNames[0];
+//         const sheet = workbook.Sheets[sheetName];
+//         const jsonData = xlsx.utils.sheet_to_json(sheet, { raw: true });
+
+//         console.log("Excel Data:", jsonData); // Debugging
+
+//         // Validate required columns
+//         if (!jsonData.length || !jsonData[0].Email) {
+//             return res.status(400).json({ error: "Invalid file format. Ensure 'Email' column exists." });
+//         }
+
+//         console.log("Processing marks...");
+
+//         // Process each row
+//         jsonData.forEach((row) => {
+//             const email = row.Email?.trim().toLowerCase(); // Normalize case & trim spaces
+//             const sql = row.SQL || row.sql || 0; // Handle case variations
+//             const tosca = row.TOSCA || row.tosca || 0;
+
+//             if (!email) return;
+
+//             // Step 1: Find trainee's employee_id using email
+//             const findEmployeeQuery = `SELECT employee_id FROM Employee WHERE LOWER(email) = ? AND is_trainee = 1`;
+
+//             db.get(findEmployeeQuery, [email], (err, employee) => {
+//                 if (err) {
+//                     console.error("Error finding employee:", err.message);
+//                     return;
+//                 }
+//                 if (!employee) {
+//                     console.warn(`No trainee found for email: ${email}`);
+//                     return;
+//                 }
+
+//                 const employeeId = employee.employee_id;
+
+//                 // Step 2: Insert marks into employee_marks table
+//                 const insertMarksQuery = `
+//                     INSERT INTO employee_marks (employee_id, sql, tosca)
+//                     VALUES (?, ?, ?)
+//                     ON CONFLICT(employee_id) 
+//                     DO UPDATE SET sql = excluded.sql, tosca = excluded.tosca;
+//                 `;
+
+
+//                 db.run(insertMarksQuery, [employeeId, sql, tosca], (err) => {
+//                     if (err) {
+//                         console.error("Error inserting marks:", err.message);
+//                     } else {
+//                         console.log(`Marks inserted for ${email} (ID: ${employeeId})`);
+//                     }
+//                 });
+//             });
+//         });
+
+//         res.status(200).json({ message: "Marks processed successfully!" });
+
+//     } catch (error) {
+//         console.error("Error processing marks:", error);
+//         res.status(500).json({ error: "Failed to process marks." });
+//     }
+// });
+
 app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
     try {
         if (!req.file) {
@@ -730,16 +891,18 @@ app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
 
         console.log("Processing marks...");
 
+        let processedTrainees = []; // ✅ Array to store processed trainee details
+
         // Process each row
         jsonData.forEach((row) => {
             const email = row.Email?.trim().toLowerCase(); // Normalize case & trim spaces
-            const sql = row.SQL || row.sql || 0; // Handle case variations
-            const tosca = row.TOSCA || row.tosca || 0;
+            const sql = row.Sql;
+            const tosca = row.Tosca;
 
             if (!email) return;
 
             // Step 1: Find trainee's employee_id using email
-            const findEmployeeQuery = `SELECT employee_id FROM Employee WHERE LOWER(email) = ? AND is_trainee = 1`;
+            const findEmployeeQuery = `SELECT employee_id, first_name, last_name, email FROM Employee WHERE LOWER(email) = ? AND is_trainee = 1`;
 
             db.get(findEmployeeQuery, [email], (err, employee) => {
                 if (err) {
@@ -752,6 +915,7 @@ app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
                 }
 
                 const employeeId = employee.employee_id;
+                const traineeName = `${employee.first_name} ${employee.last_name}`;
 
                 // Step 2: Insert marks into employee_marks table
                 const insertMarksQuery = `
@@ -761,18 +925,30 @@ app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
                     DO UPDATE SET sql = excluded.sql, tosca = excluded.tosca;
                 `;
 
-
                 db.run(insertMarksQuery, [employeeId, sql, tosca], (err) => {
                     if (err) {
                         console.error("Error inserting marks:", err.message);
                     } else {
                         console.log(`Marks inserted for ${email} (ID: ${employeeId})`);
+
+                        // ✅ Store processed trainee info
+                        processedTrainees.push({
+                            name: traineeName,
+                            email: email,
+                            sql: sql,
+                            tosca: tosca,
+                        });
                     }
                 });
             });
         });
 
-        res.status(200).json({ message: "Marks processed successfully!" });
+        setTimeout(() => {
+            res.status(200).json({
+                message: "Marks processed successfully!",
+                trainees: processedTrainees, // ✅ Send all processed trainees
+            });
+        }, 1000); // ✅ Small delay to ensure all DB operations complete
 
     } catch (error) {
         console.error("Error processing marks:", error);
