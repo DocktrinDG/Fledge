@@ -56,6 +56,7 @@ const TrainerDashboard = () => {
     setShowBatchModal(true); // Show the modal
   };
 
+
   // Fetch Projects
   const fetchProjects = async () => {
     try {

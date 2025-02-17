@@ -25,6 +25,21 @@ const AdminDashboard = () => {
 		return password;
 	};
 
+	const handleLogout = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			await axios.post("http://localhost:3001/logout", {}, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			localStorage.removeItem("token");  // ✅ Remove token from localStorage
+			navigate("/");  // ✅ Redirect to login page
+		} catch (err) {
+			console.error("Error logging out:", err);
+			alert("Logout failed. Try again.");
+		}
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const password = generatePassword(); // ✅ Generate random password
@@ -58,8 +73,9 @@ const AdminDashboard = () => {
 				<div className="navigation">
 					<button className="tab" onClick={() => navigate('employee')}>Employees</button>
 					<button className="tab" onClick={() => navigate('batch')}>Batch</button>
-					<button className="tab" onClick={()=>navigate('/admin/trainee')}>Trainers</button>
-					<button className="tab" onClick={()=>navigate('/admin/trainer')}>Trainees</button>
+					<button className="tab" onClick={() => navigate('/admin/trainee')}>Trainers</button>
+					<button className="tab" onClick={() => navigate('/admin/trainer')}>Trainees</button>
+					<button className="logout-button" onClick={handleLogout}>Logout</button>
 				</div>
 			</div>
 			<div className="container">
