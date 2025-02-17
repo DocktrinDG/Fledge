@@ -158,11 +158,51 @@ const EmployeeProfile = () => {
                 </div>
             </div>
 
+            {/* Modal for Adding Certificate */}
+            {showCertModal && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h2>Add Certificate</h2>
+                        <form>
+                            <label>Certification Name:</label>
+                            <input
+                                type="text"
+                                value={newCert.certification_name}
+                                onChange={(e) => setNewCert({ ...newCert, certification_name: e.target.value })}
+                            />
+                            <label>Issued By:</label>
+                            <input
+                                type="text"
+                                value={newCert.issued_by}
+                                onChange={(e) => setNewCert({ ...newCert, issued_by: e.target.value })}
+                            />
+                            <label>Issue Date:</label>
+                            <input
+                                type="date"
+                                value={newCert.issue_date}
+                                onChange={(e) => setNewCert({ ...newCert, issue_date: e.target.value })}
+                            />
+                            <label>Expiry Date:</label>
+                            <input
+                                type="date"
+                                value={newCert.expiry_date}
+                                onChange={(e) => setNewCert({ ...newCert, expiry_date: e.target.value })}
+                            />
+                        </form>
+                        <div className="modal-buttons">
+                            <button className="confirm-button" onClick={handleAddCertificate}>Save</button>
+                            <button className="cancel-button" onClick={() => setShowCertModal(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
             {/* ✅ Performance Section */}
             <div className="section">
                 <h2 className="section-title">Performance</h2>
                 <div className="certifications-section">
-                    {chartData ? <Chart chartData={chartData} /> : <p>Loading Performance Data...</p>}
+                    {chartData ? <Chart chartData={chartData} /> : <p>No Performance</p>}
                 </div>
             </div>
         </div>

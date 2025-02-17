@@ -129,8 +129,6 @@ const AdminDashboard = () => {
 						<div className="input">
 							<div className="title3">Role</div>
 							<select className="textfield1" value={role} onChange={(e) => setRole(e.target.value)}>
-								<option value="Trainer">Trainer</option>
-								<option value="Trainee">Trainee</option>
 								<option value="Manager">Manager</option>
 								<option value="Admin">Admin</option>
 							</select>
