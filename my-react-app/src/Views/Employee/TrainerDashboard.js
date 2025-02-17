@@ -137,18 +137,12 @@ const TrainerDashboard = () => {
         return;
       }
 
-      // Iterate over trainees and store the email
+      // ✅ Send messages with each trainee's email stored
       result.trainees.forEach((trainee) => {
         const prompt = `${trainee.name} has got ${trainee.tosca} in Tosca and ${trainee.sql} in SQL. Please provide a review based on their performance.`;
 
-        // Set email and message, then send message
-        setEmail(trainee.email); // Set the email before calling sendMessage
-        setMessage(prompt); // Set the message prompt
-
-        console.log("Email Set:", trainee.email); // Debugging
-        console.log("AI Prompt:", prompt); // Debugging
-
-        sendMessage(trainee.email, prompt); // Send the message
+        console.log("Sending AI Request For:", trainee.email);
+        sendMessage(trainee.email, prompt);  // ✅ Pass email explicitly
       });
 
       if (response.ok) {
@@ -172,31 +166,35 @@ const TrainerDashboard = () => {
       const token = response.data.token;
       const directLineInstance = new DirectLine({ token });
       setDirectLine(directLineInstance);
-
+  
       directLineInstance.connectionStatus$.subscribe((status) => {
         if (status === 2) {
           setConversationId(directLineInstance.conversationId);
         }
       });
-
+  
       directLineInstance.activity$.subscribe(async (activity) => {
         if (activity.type === "message" && activity.from.id !== "user") {
           setMessages((prevMessages) => [
             ...prevMessages,
             { from: "bot", text: activity.text },
           ]);
-
-          if (email) {
-            console.log("Sending Email To:", email);
+  
+          // ✅ Extract email from original user request
+          const relatedMessage = messages.find(msg => msg.text === activity.replyToId);
+          const recipientEmail = relatedMessage?.recipientEmail;
+  
+          if (recipientEmail) {
+            console.log("Sending Email To:", recipientEmail);
             console.log("AI Response:", activity.text);
-
+  
             try {
               const emailResponse = await axios.post(
                 "http://localhost:3001/send-email",
                 {
-                  to: email,
+                  to: recipientEmail,
                   subject: "SkillMatrix AI Performance Review",
-                  message: activity.text, // AI-generated response
+                  message: activity.text,
                 }
               );
               console.log("Email Sent Successfully:", emailResponse.data);
@@ -204,25 +202,26 @@ const TrainerDashboard = () => {
               console.error("Error Sending Email:", emailError);
             }
           } else {
-            console.warn("No email set, skipping email send.");
+            console.warn("No email found, skipping email send.");
           }
         }
       });
     } catch (error) {
       console.error("Error fetching token:", error);
     }
-  };
+  };  
 
   // AI Agent Message
   const sendMessage = async (recipientEmail, aiPrompt) => {
     if (directLine && aiPrompt) {
       try {
         await directLine.postActivity({
-          from: { id: 'user', name: 'User' },
-          type: 'message',
-          text: aiPrompt
+          from: { id: "user", name: "User" },
+          type: "message",
+          text: aiPrompt,
+          recipientEmail,  // ✅ Store email inside the message
         }).subscribe();
-        console.log('Posted activity successfully.');
+        console.log("AI Request Sent for:", recipientEmail);
       } catch (error) {
         console.error("Error posting activity:", error);
         alert("Error posting activity.");
@@ -595,7 +594,7 @@ const TrainerDashboard = () => {
           </div>
         </div>
       )}
-      <div className="spacer"/>
+      <div className="spacer" />
       <Footer />
     </div>
   );

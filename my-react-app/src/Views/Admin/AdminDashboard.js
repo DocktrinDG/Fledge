@@ -59,7 +59,7 @@ const AdminDashboard = () => {
 			setEmail('');
 			setPhone('');
 			setRole('');
-			alert(`Trainer added successfully!\nUsername: ${email}\nPassword: ${password}`);
+			alert(`Trainer added successfully!`);
 		} catch (error) {
 			console.error("❌ Error adding trainer:", error);
 			alert("Error adding trainer.");
