@@ -382,7 +382,7 @@ const TrainerDashboard = () => {
       <header className="top-bar">
         <h1 className="dashboard-title">Trainer Dashboard</h1>
         <nav className="navigation">
-          <button className="nav-link" onClick={() => navigate("/trainer-dashboard")}>Home</button>
+          <button className="nav-link" onClick={() => navigate("/trainer-dashboard")}>Dashboard</button>
           <button className="nav-link" onClick={() => navigate("/trainer-dashboard/training")}>Training</button>
           <button className="nav-link" onClick={() => navigate("/ai-agent")}>Chat Bot</button>
           <button className="logout-button" onClick={handleLogout}>Logout</button>
@@ -461,7 +461,7 @@ const TrainerDashboard = () => {
 
         {/* Project Allocation Section */}
         <div className="dashboard-card">
-          <h2 className="card-title">Project Allocation</h2>
+          <h2 className="card-title">Skilled Resources</h2>
           <button className="placeholder-button" onClick={() => setShowRecommendationModal(true)}>
             AI-driven recommendations here.
           </button>

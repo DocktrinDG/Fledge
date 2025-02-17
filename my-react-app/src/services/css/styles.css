@@ -1,8 +1,8 @@
-/* Base Styles for the Chat */
+/* General Chat Styling */
 .chat-container {
   font-family: 'Roboto', sans-serif;
-  background-color: #121212;
-  color: #f4f4f4;
+  background-color: #f4f6f9; /* Same as TrainerDashboard */
+  color: #333; /* Light text color */
   min-height: 100vh;
   padding: 20px;
   display: flex;
@@ -12,13 +12,14 @@
 }
 
 .chat-title {
-  color: #00bcd4;
+  color: #007bff; /* Consistent with the blue theme of TrainerDashboard */
   font-size: 2rem;
   margin-bottom: 30px;
   font-weight: 600;
   text-align: center;
 }
 
+/* Message Box */
 .chat-box {
   max-width: 800px;
   width: 100%;
@@ -26,9 +27,9 @@
   overflow-y: auto;
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #1e1e1e;
+  background-color: #ffffff; /* White background */
   border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Consistent box shadow */
 }
 
 .chat-message {
@@ -44,21 +45,22 @@
 .message-bubble {
   max-width: 70%;
   padding: 12px 16px;
-  background-color: #333;
+  background-color: #f4f6f9; /* Consistent light background */
   border-radius: 20px;
-  color: #f4f4f4;
+  color: #333; /* Dark text color */
   word-wrap: break-word;
 }
 
+/* Different background colors for user and bot */
 .chat-message.user .message-bubble {
-  background-color: #4caf50;
+  background-color: #007bff; /* Blue for user */
   color: white;
   border-top-left-radius: 0;
   border-top-right-radius: 20px;
 }
 
 .chat-message.bot .message-bubble {
-  background-color: #2196f3;
+  background-color: #2196f3; /* Blue for bot */
   color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 0;
@@ -79,13 +81,13 @@
   border: none;
   outline: none;
   font-size: 16px;
-  background-color: #333;
-  color: #f4f4f4;
+  background-color: #ffffff; /* White background */
+  color: #333; /* Dark text */
   margin-right: 15px;
 }
 
 .input-box::placeholder {
-  color: #bdbdbd;
+  color: #bdbdbd; /* Light grey placeholder */
 }
 
 /* Send Button */
@@ -95,7 +97,7 @@
   /* Set width to auto */
   max-width: 150px;
   /* Set a max width for the button */
-  background-color: #00bcd4;
+  background-color: #007bff; /* Same blue as the navbar */
   color: white;
   border: none;
   border-radius: 25px;
@@ -106,7 +108,7 @@
 }
 
 .send-button:hover {
-  background-color: #0097a7;
+  background-color: #0056b3;
 }
 
 /* Conversation ID */

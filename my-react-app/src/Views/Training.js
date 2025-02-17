@@ -100,7 +100,7 @@ const Training = () => {
             <header className="top-bar">
                 <h1 className="dashboard-title">Trainer Dashboard</h1>
                 <nav className="navigation">
-                    <button className="nav-link" onClick={() => navigate('/trainer-dashboard')}>Home</button>
+                    <button className="nav-link" onClick={() => navigate('/trainer-dashboard')}>Dashboard</button>
                     <button className="nav-link">Training</button>
                     <button className="nav-link" onClick={() => navigate('/ai-agent')}>Chat Bot</button>
                 </nav>
@@ -159,7 +159,6 @@ const Training = () => {
                             <input type="text" placeholder="Training Name" value={trainingName} onChange={(e) => setTrainingName(e.target.value)} required />
                             <textarea rows={4} placeholder="Training Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                             <input type="url" placeholder="Document URL" value={documentationUrl} onChange={(e) => setDocumentationUrl(e.target.value)} />
-
                             <div className="modal-buttons">
                                 <button type="submit" className="confirm-button">Create Training</button>
                                 <button type="button" className="cancel-button" onClick={() => setShowModal(false)}>Cancel</button>

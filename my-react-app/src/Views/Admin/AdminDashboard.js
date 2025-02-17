@@ -79,7 +79,7 @@ const AdminDashboard = () => {
 				</div>
 			</div>
 			<div className="container">
-				<b className="title1">Employee Management</b>
+				<b className="title1">Employee Management</b><br/>
 				<div className="description">Add and manage employees efficiently</div>
 			</div>
 			<form className="form" onSubmit={handleSubmit}>

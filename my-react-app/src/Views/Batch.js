@@ -151,40 +151,86 @@ const Batch = () => {
             </div>
 
             {/* 🟢 Add Batch Modal */}
+            {/* 🟢 Add Batch Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <h2>Create New Batch</h2>
                         <form onSubmit={handleSubmit}>
-                            <input type="text" placeholder="Batch Name" value={batchName} onChange={(e) => setBatchName(e.target.value)} required />
-                            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-                            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+                            <div>
+                                <label>Batch Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter batch name"
+                                    value={batchName}
+                                    onChange={(e) => setBatchName(e.target.value)}
+                                    required
+                                />
+                            </div>
 
-                            <label>Select Trainees:</label>
-                            <select multiple onChange={(e) => setSelectedTrainees([...e.target.selectedOptions].map(o => o.value))}>
-                                {trainees.map(trainee => (
-                                    <option key={trainee.employee_id} value={trainee.employee_id}>
-                                        {trainee.first_name} {trainee.last_name}
-                                    </option>
-                                ))}
-                            </select>
+                            <div>
+                                <label>Start Date</label>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    required
+                                />
+                            </div>
 
-                            <label>Select Trainers:</label>
-                            <select multiple onChange={(e) => setSelectedTrainers([...e.target.selectedOptions].map(o => o.value))}>
-                                {trainers.map(trainer => (
-                                    <option key={trainer.employee_id} value={trainer.employee_id}>
-                                        {trainer.first_name} {trainer.last_name}
-                                    </option>
-                                ))}
-                            </select>
+                            <div>
+                                <label>End Date</label>
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    required
+                                />
+                            </div>
 
-                            <button type="submit" className="submit-button">Create Batch</button>
-                            <button type="button" className="close-modal" onClick={() => setShowModal(false)}>Close</button>
+                            <div>
+                                <label>Select Trainees</label>
+                                <select
+                                    multiple
+                                    onChange={(e) =>
+                                        setSelectedTrainees([...e.target.selectedOptions].map((o) => o.value))
+                                    }
+                                >
+                                    {trainees.map((trainee) => (
+                                        <option key={trainee.employee_id} value={trainee.employee_id}>
+                                            {trainee.first_name} {trainee.last_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label>Select Trainers</label>
+                                <select
+                                    multiple
+                                    onChange={(e) =>
+                                        setSelectedTrainers([...e.target.selectedOptions].map((o) => o.value))
+                                    }
+                                >
+                                    {trainers.map((trainer) => (
+                                        <option key={trainer.employee_id} value={trainer.employee_id}>
+                                            {trainer.first_name} {trainer.last_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <button type="submit" className="submit-button">
+                                Create Batch
+                            </button>
+                            <button type="button" className="close" onClick={() => setShowModal(false)}>
+                                Close
+                            </button>
                         </form>
                     </div>
                 </div>
             )}
-			<Footer />
+            <Footer />
 
         </div>
     );
