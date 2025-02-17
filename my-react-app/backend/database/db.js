@@ -158,9 +158,20 @@ const createTables = () => {
         FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
     );
   `);
+
+    db.run(`
+    CREATE TABLE IF NOT EXISTS Project (
+      project_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      employee_id INTEGER,
+      project_name TEXT NOT NULL,
+      description TEXT,
+      start_date DATE NOT NULL,
+      end_date DATE NOT NULL,
+      FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE
+    );
+  `);
   });
 };
-
 // Create tables if they don't exist
 createTables();
 

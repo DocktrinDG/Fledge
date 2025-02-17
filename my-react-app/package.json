@@ -8,6 +8,7 @@
     "cdbreact": "^1.5.19",
     "chart.js": "^4.4.7",
     "cra-template": "1.2.0",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.475.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

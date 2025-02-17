@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
 // Function to Send Email**
 const sendEmail = async (to, username, password) => {
     const mailOptions = {
-        from: "nankervis1125@gmail.com",
+        from: "skillmatrix.1502@gmail.com",
         to: to,
         subject: "Your Account Credentials",
         text: `Dear ${username},\n\nYour account has been created successfully!\n\nUsername: ${username}\nPassword: ${password}\n\nPlease change your password after logging in.\n\nBest regards,\nAdmin Team`,
@@ -711,6 +711,18 @@ app.post('/login', (req, res) => {
     });
 });
 
+//logout
+app.post("/logout", (req, res) => {
+    try {
+        res.clearCookie("token"); // If using cookies for authentication
+        res.status(200).json({ message: "Logged out successfully!" });
+    } catch (error) {
+        console.error("Logout error:", error);
+        res.status(500).json({ error: "Failed to log out." });
+    }
+});
+
+
 //show all batch
 app.get('/batches', (req, res) => {
     const query = 'SELECT * FROM Batch';
@@ -797,78 +809,6 @@ app.put("/employee/:id/remove-trainee", (req, res) => {
         res.status(200).json({ message: "Trainee removed successfully!" });
     });
 });
-
-//upload marks for analysis
-// app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
-//     try {
-//         if (!req.file) {
-//             return res.status(400).json({ error: "No file uploaded" });
-//         }
-
-//         const filePath = req.file.path;
-//         const workbook = xlsx.readFile(filePath);
-//         const sheetName = workbook.SheetNames[0];
-//         const sheet = workbook.Sheets[sheetName];
-//         const jsonData = xlsx.utils.sheet_to_json(sheet, { raw: true });
-
-//         console.log("Excel Data:", jsonData); // Debugging
-
-//         // Validate required columns
-//         if (!jsonData.length || !jsonData[0].Email) {
-//             return res.status(400).json({ error: "Invalid file format. Ensure 'Email' column exists." });
-//         }
-
-//         console.log("Processing marks...");
-
-//         // Process each row
-//         jsonData.forEach((row) => {
-//             const email = row.Email?.trim().toLowerCase(); // Normalize case & trim spaces
-//             const sql = row.SQL || row.sql || 0; // Handle case variations
-//             const tosca = row.TOSCA || row.tosca || 0;
-
-//             if (!email) return;
-
-//             // Step 1: Find trainee's employee_id using email
-//             const findEmployeeQuery = `SELECT employee_id FROM Employee WHERE LOWER(email) = ? AND is_trainee = 1`;
-
-//             db.get(findEmployeeQuery, [email], (err, employee) => {
-//                 if (err) {
-//                     console.error("Error finding employee:", err.message);
-//                     return;
-//                 }
-//                 if (!employee) {
-//                     console.warn(`No trainee found for email: ${email}`);
-//                     return;
-//                 }
-
-//                 const employeeId = employee.employee_id;
-
-//                 // Step 2: Insert marks into employee_marks table
-//                 const insertMarksQuery = `
-//                     INSERT INTO employee_marks (employee_id, sql, tosca)
-//                     VALUES (?, ?, ?)
-//                     ON CONFLICT(employee_id) 
-//                     DO UPDATE SET sql = excluded.sql, tosca = excluded.tosca;
-//                 `;
-
-
-//                 db.run(insertMarksQuery, [employeeId, sql, tosca], (err) => {
-//                     if (err) {
-//                         console.error("Error inserting marks:", err.message);
-//                     } else {
-//                         console.log(`Marks inserted for ${email} (ID: ${employeeId})`);
-//                     }
-//                 });
-//             });
-//         });
-
-//         res.status(200).json({ message: "Marks processed successfully!" });
-
-//     } catch (error) {
-//         console.error("Error processing marks:", error);
-//         res.status(500).json({ error: "Failed to process marks." });
-//     }
-// });
 
 app.post("/upload-marks", upload.single("marksFile"), async (req, res) => {
     try {
@@ -999,6 +939,127 @@ app.get("/token", async (req, res) => {
     }
 });
 
+// Get Employee's Certifications (Protected)
+app.get("/employee/performance", verifyToken, (req, res) => {
+    const employeeId = req.user?.employee_id; // Ensure extraction from JWT token
+
+    if (!employeeId) {
+        return res.status(401).json({ error: "Unauthorized access. Invalid token." });
+    }
+
+    const query = `
+        select * from employee_marks where employee_id = ?
+    `;
+
+    db.all(query, [employeeId], (err, rows) => {
+        if (err) {
+            console.error("❌ Error fetching peforamce:", err.message);
+            return res.status(500).json({ error: "Failed to fetch peforamce." });
+        }
+        res.status(200).json(rows.length ? rows : []); // Return empty array if no data
+    });
+});
+
+app.get("/projects", verifyToken, (req, res) => {
+    const employeeId = req.user?.employee_id; // Ensure extraction from JWT token
+    if (!employeeId) {
+        return res.status(401).json({ error: "Unauthorized access. Invalid token." });
+    }
+    const query = `
+        select * from Project
+    `;
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            console.error("❌ Error fetching project:", err.message);
+            return res.status(500).json({ error: "Failed to fetch project." });
+        }
+        res.status(200).json(rows.length ? rows : []); // Return empty array if no data
+    });
+});
+
+app.post("/recommend-trainee", verifyToken, (req, res) => {
+    const { project_id, subject_name } = req.body;
+
+    // Validate input
+    if (!project_id || !subject_name) {
+        return res.status(400).json({ error: "Project ID and subject name are required." });
+    }
+
+    // Ensure subject_name is valid
+    const validSubjects = ["sql", "tosca"];
+    if (!validSubjects.includes(subject_name.toLowerCase())) {
+        return res.status(400).json({ error: "Invalid subject name. Use 'sql' or 'tosca'." });
+    }
+
+    // Query to find the trainee with the highest mark in the selected subject
+    const query = `
+        SELECT E.employee_id, E.first_name, E.last_name, E.email, M.${subject_name} AS score
+        FROM Employee E
+        JOIN employee_marks M ON E.employee_id = M.employee_id
+        WHERE E.is_trainee = 1
+        ORDER BY M.${subject_name} DESC
+        LIMIT 1;
+    `;
+
+    db.get(query, [], (err, row) => {
+        if (err) {
+            console.error("❌ Error fetching recommended trainee:", err.message);
+            return res.status(500).json({ error: "Failed to fetch trainee recommendation." });
+        }
+
+        if (!row) {
+            return res.status(404).json({ error: "No trainees found with marks in this subject." });
+        }
+
+        res.status(200).json({
+            employee_id: row.employee_id,
+            name: `${row.first_name} ${row.last_name}`,
+            email: row.email,
+            score: row.score,
+        });
+    });
+});
+
+//Allocation to project
+app.post("/allocate-to-project", verifyToken, (req, res) => {
+    const { employee_id, project_id } = req.body;
+
+    // Validate input
+    if (!employee_id || !project_id) {
+        return res.status(400).json({ error: "Employee ID and Project ID are required." });
+    }
+
+    // Check if the employee is already assigned to the project
+    const checkQuery = `
+        SELECT * FROM Project WHERE employee_id = ? AND project_id = ?
+    `;
+
+    db.get(checkQuery, [employee_id, project_id], (err, row) => {
+        if (err) {
+            console.error("❌ Error checking existing allocation:", err.message);
+            return res.status(500).json({ error: "Database error while checking allocation." });
+        }
+
+        if (row) {
+            return res.status(409).json({ error: "Employee is already assigned to this project." });
+        }
+
+        // Insert employee into the Project table
+        const insertQuery = `
+            INSERT INTO Project (employee_id, project_name, description, start_date, end_date)
+            SELECT ?, project_name, description, start_date, end_date FROM Project WHERE project_id = ?
+        `;
+
+        db.run(insertQuery, [employee_id, project_id], function (err) {
+            if (err) {
+                console.error("❌ Error allocating employee to project:", err.message);
+                return res.status(500).json({ error: "Failed to allocate employee to project." });
+            }
+
+            res.status(200).json({ message: "Employee successfully allocated to project!" });
+        });
+    });
+});
 
 
 // Handle 404 (Not Found) errors for any other routes

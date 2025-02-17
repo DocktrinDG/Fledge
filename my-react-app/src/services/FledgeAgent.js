@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DirectLine } from 'botframework-directlinejs';
 import axios from 'axios';
+import './css/styles.css'; // External CSS for better styling
 
 const FledeAgent = () => {
   const [directLine, setDirectLine] = useState(null);
@@ -11,7 +12,7 @@ const FledeAgent = () => {
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/token');  // FastAPI token endpoint
+        const response = await axios.get('http://localhost:3001/token');
         const token = response.data.token;
         const directLineInstance = new DirectLine({ token });
         setDirectLine(directLineInstance);
@@ -24,7 +25,6 @@ const FledeAgent = () => {
 
         directLineInstance.activity$.subscribe(activity => {
           if (activity.type === 'message' && activity.from.id !== 'user') {
-            console.log('Bot says:', activity.text);
             setMessages(prevMessages => [...prevMessages, { from: 'bot', text: activity.text }]);
           }
         });
@@ -44,7 +44,6 @@ const FledeAgent = () => {
         text: message
       }).subscribe(
         id => {
-          console.log('Posted activity, assigned ID:', id);
           setMessages(prevMessages => [...prevMessages, { from: 'user', text: message }]);  // Add user message
         },
         error => console.error('Error posting activity:', error)
@@ -54,33 +53,37 @@ const FledeAgent = () => {
   };
 
   return (
-    <div className="App" style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Chat with Bot</h1>
+    <div className="chat-container">
+      <h1 className="chat-title">Chat with Bot</h1>
 
       {/* Display the conversation */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="chat-box">
         {messages.map((msg, index) => (
-          <div key={index} style={{ textAlign: msg.from === 'user' ? 'right' : 'left' }}>
-            <p><strong>{msg.from === 'user' ? 'You' : 'Bot'}:</strong> {msg.text}</p>
+          <div key={index} className={`chat-message ${msg.from}`}>
+            <div className="message-bubble">
+              <strong>{msg.from === 'user' ? 'You' : 'Bot'}:</strong>
+              <p>{msg.text}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Input field to enter your prompt */}
-      <input
-        type="text"
-        value={message}
-        onChange={e => setMessage(e.target.value)}
-        placeholder="Type a message..."
-        style={{ padding: '10px', width: '300px' }}
-      />
+      <div className="input-container">
+        <input
+          type="text"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="Type a message..."
+          className="input-box"
+        />
+        <button onClick={sendMessage} className="send-button">
+          Send
+        </button>
+      </div>
 
-      {/* Button to send the prompt */}
-      <button onClick={sendMessage} style={{ padding: '10px', marginLeft: '10px' }}>
-        Send
-      </button>
-
-      <p>Conversation ID: {conversationId}</p>
+      {/* Display conversation ID */}
+      <p className="conversation-id">Conversation ID: {conversationId}</p>
     </div>
   );
 };

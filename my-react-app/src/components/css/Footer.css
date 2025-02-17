@@ -6,7 +6,9 @@
     justify-content: center;
     z-index: 3;
     text-align: center;
-    font-size: 15px;
+    font-size: 20px;
+    color: black;
+    font-weight: 600;
 }
 
 
@@ -15,14 +17,4 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-}
-
-.title9 {
-    align-self: stretch;
-    width: 390px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
 }
